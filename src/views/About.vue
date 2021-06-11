@@ -8,6 +8,17 @@
 </template>
 
 <script>
+import {getName} from '@/utils'
+import {testSendRequest} from '@/api/test'
+
+export default {
+  data() {
+    return {}
+  },
+  created() {
+  },
+  methods: {}
+}
 
 </script>
 
