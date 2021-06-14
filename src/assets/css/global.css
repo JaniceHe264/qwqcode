@@ -4,3 +4,22 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
+/**
+ * 头部搜索框激活边框颜色修改
+ */
+.header .center .el-input__inner:focus {
+  outline: 0;
+  border-color: #17a788;
+}
+
+/**
+ * 头部头像下拉菜单样式修改
+ */
+.el-popover.poper-panel {
+  text-align: center;
+}
+
+.el-popover.poper-panel .avatar-menu {
+  font-size: 25px;
+}

@@ -26,7 +26,7 @@ import Cookie from 'js-cookie'
 
 const app = createApp(App);
 
-app.config.globalProperties.$cookie = Cookie
+app.config.globalProperties.$jscookie = Cookie
 
 app.use(store)
   .use(router)
