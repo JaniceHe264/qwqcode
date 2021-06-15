@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-affix class="header">
+  <el-affix position="top">
+    <div class="header">
       <el-row :gutter="10">
         <el-col :span="4">
           <div class="left">
@@ -84,8 +84,8 @@
           </div>
         </el-col>
       </el-row>
-    </el-affix>
-  </div>
+    </div>
+  </el-affix>
 </template>
 
 <script>
@@ -97,7 +97,7 @@ export default {
     return {
       keyword: '',
       circleUrl:
-        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+        require('@/assets/image/me.jpg'),
     }
   },
   components: {
@@ -111,7 +111,11 @@ export default {
 
 <style scoped lang="scss">
 .header {
+  overflow: hidden;
+  margin-bottom: 15px;
+  background-color: white;
   box-shadow: 0px 0px 20px -13px $theme-color;
+
   .left {
     height: $header-height;
     text-align: right;
@@ -120,6 +124,7 @@ export default {
 
     span {
       font-weight: bolder;
+      cursor: pointer;
     }
 
     .zhi {
@@ -166,10 +171,10 @@ export default {
   }
 
   .right {
+    padding-left: 30px;
     width: 100%;
     height: $header-height;
     line-height: $header-height;
-    padding-left: 30px;
 
     .avatar {
       position: absolute;

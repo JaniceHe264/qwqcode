@@ -6,9 +6,100 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "77021",
+      "name": "已关注",
+      "font_class": "followed",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "11372674",
+      "name": "关注",
+      "font_class": "attention",
+      "unicode": "e8b1",
+      "unicode_decimal": 59569
+    },
+    {
+      "icon_id": "393818",
+      "name": "我的足迹",
+      "font_class": "history",
+      "unicode": "e6d1",
+      "unicode_decimal": 59089
+    },
+    {
+      "icon_id": "2674484",
+      "name": "收藏",
+      "font_class": "love",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "11372687",
+      "name": "评论",
+      "font_class": "comment",
+      "unicode": "e8b4",
+      "unicode_decimal": 59572
+    },
+    {
+      "icon_id": "14623487",
+      "name": "热门",
+      "font_class": "hot",
+      "unicode": "e6b2",
+      "unicode_decimal": 59058
+    },
+    {
+      "icon_id": "77828",
+      "name": "收藏",
+      "font_class": "collect",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "2019049",
+      "name": "回答",
+      "font_class": "answer",
+      "unicode": "e7a0",
+      "unicode_decimal": 59296
+    },
+    {
+      "icon_id": "3315084",
+      "name": "博客园",
+      "font_class": "blog",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "5460559",
+      "name": "问题解答",
+      "font_class": "question",
+      "unicode": "ec2e",
+      "unicode_decimal": 60462
+    },
+    {
+      "icon_id": "18164580",
+      "name": "思考,想法,联想,处理",
+      "font_class": "idea",
+      "unicode": "e861",
+      "unicode_decimal": 59489
+    },
+    {
+      "icon_id": "22960799",
+      "name": "创作者中心",
+      "font_class": "write",
+      "unicode": "e823",
+      "unicode_decimal": 59427
+    },
+    {
+      "icon_id": "11124968",
+      "name": "文章",
+      "font_class": "article",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
       "icon_id": "6337455",
       "name": "点赞",
-      "font_class": "dianzan",
+      "font_class": "good",
       "unicode": "ec7f",
       "unicode_decimal": 60543
     }

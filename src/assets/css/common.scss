@@ -1,6 +1,10 @@
 //============= 整体 =============
 //===== 主题色 =====
 $theme-color: #17a788;
+//===== 盒子阴影 =======
+$panel-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.12);
+//===== 盒子圆角 =======
+$panel-radius: 5px;
 
 //============= 头部 =============
 //===头部高度
@@ -10,6 +14,22 @@ $header-zhi-size: 58px;
 $header-xiao-size: 45px;
 $header-zhi-color: #02bab2;
 $header-xiao-color: #5397fa;
+
+//============= 首页 =============
+//====左侧导航按钮 ====
+$nav-btn-question-icon: #0066ff;
+$nav-btn-answer-icon: #ff9607;
+$nav-btn-idea-icon: #f4c807;
+$nav-btn-blog-icon: #26bfbf;
+$nav-btn-question-back: #e1edff;
+$nav-btn-answer-back: #fff3e2;
+$nav-btn-idea-back: #fef9e2;
+$nav-btn-blog-back: #e5f7f7;
+
+$nav-header-icon: #17a788;
+$nav-item-attention-icon: #f30000;
+$nav-item-history-icon: #0066ff;
+$nav-item-collect-icon: #eea806;
 
 
 

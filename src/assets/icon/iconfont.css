@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3198268 */
-  src: url('iconfont.woff2?t=1645521755835') format('woff2'),
-       url('iconfont.woff?t=1645521755835') format('woff'),
-       url('iconfont.ttf?t=1645521755835') format('truetype');
+  src: url('iconfont.woff2?t=1645620047004') format('woff2'),
+       url('iconfont.woff?t=1645620047004') format('woff'),
+       url('iconfont.ttf?t=1645620047004') format('truetype');
 }
 
 .iconfont {
@@ -13,7 +13,63 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-dianzan:before {
+.icon-nav:before {
+  content: "\e611";
+}
+
+.icon-followed:before {
+  content: "\e601";
+}
+
+.icon-attention:before {
+  content: "\e8b1";
+}
+
+.icon-history:before {
+  content: "\e6d1";
+}
+
+.icon-love:before {
+  content: "\e627";
+}
+
+.icon-comment:before {
+  content: "\e8b4";
+}
+
+.icon-hot:before {
+  content: "\e6b2";
+}
+
+.icon-collect:before {
+  content: "\e600";
+}
+
+.icon-answer:before {
+  content: "\e7a0";
+}
+
+.icon-blog:before {
+  content: "\e603";
+}
+
+.icon-question:before {
+  content: "\ec2e";
+}
+
+.icon-idea:before {
+  content: "\e861";
+}
+
+.icon-write:before {
+  content: "\e823";
+}
+
+.icon-article:before {
+  content: "\e615";
+}
+
+.icon-good:before {
   content: "\ec7f";
 }
 

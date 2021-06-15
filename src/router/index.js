@@ -3,8 +3,16 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/views/Home')
+    name: 'Index',
+    redirect: '/home',
+    component: () => import('@/views/Index'),
+    children: [
+      {
+        path: '/home',
+        name: 'Home',
+        component: () => import('@/views/home')
+      }
+    ]
   }
 ]
 
