@@ -16,10 +16,34 @@ html, body {
 /**
  * 头部头像下拉菜单样式修改
  */
-.el-popover.poper-panel {
+.el-popover.popover-panel {
   text-align: center;
 }
 
-.el-popover.poper-panel .avatar-menu {
+.el-popover.popover-panel .avatar-menu {
   font-size: 25px;
+}
+
+/**
+ * 分享按钮下来菜单样式修改
+ */
+.el-popover.share-popover {
+  text-align: center;
+}
+
+.el-popover.share-popover .share-panel .share-item {
+  color: #8590a6;
+  font-size: 16px;
+  cursor: pointer;
+  height: 40px;
+  line-height: 40px;
+}
+
+.el-popover.share-popover .share-panel .share-item p{
+  padding: 0;
+  margin: 0;
+}
+
+.el-popover.share-popover .share-panel .share-item:hover {
+  background-color: #f6f6f6;
 }

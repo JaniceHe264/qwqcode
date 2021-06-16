@@ -53,7 +53,7 @@
               :width="150"
               trigger="click"
               center
-              popper-class="poper-panel"
+              popper-class="popover-panel"
             >
               <template #default>
                 <div class="avatar-menu">
