@@ -3,7 +3,7 @@
     <div class="header">
       <el-row :gutter="10">
         <el-col :span="4">
-          <div class="left">
+          <div class="left" @click="goHome()">
             <span class="zhi">栀</span>
             <span class="xiao">晓</span>
           </div>
@@ -105,7 +105,14 @@ export default {
   },
   created() {
   },
-  methods: {}
+  methods: {
+    goHome() {
+      this.$router.push({
+        path: '/home',
+        name: 'Home'
+      })
+    }
+  }
 }
 </script>
 

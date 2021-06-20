@@ -164,7 +164,7 @@
                         测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
                         文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
                       <p>
-                        <el-link type="primary" :underline="false">阅读全文</el-link>
+                        <el-link type="primary" :underline="false" @click="goDetail(1)">阅读全文</el-link>
                       </p>
                       <div class="btn-group">
                         <el-row>
@@ -542,7 +542,7 @@
 import {Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled} from '@element-plus/icons-vue'
 
 export default {
-  name: "index",
+  name: "Home",
   data() {
     return {
       questionAttention: false,
@@ -570,6 +570,15 @@ export default {
     }
   },
   methods: {
+    goDetail(id) {
+      this.$router.push({
+        path: '/detail',
+        name: 'Detail',
+        query: {
+          id: 1
+        }
+      })
+    },
     changeNav(index) {
       this.curActive = index;
     }
@@ -587,7 +596,7 @@ export default {
     padding: 15px;
     box-shadow: $panel-shadow;
     margin: auto;
-    width: 80%;
+    width: $panel-width;
     min-height: 800px;
 
     .left {
@@ -655,7 +664,7 @@ export default {
 
             span {
               font-size: 14px;
-              color: #8590a6;
+              color: $info-color;
               cursor: pointer;
             }
           }
@@ -847,8 +856,8 @@ export default {
             }
           }
 
-          .tag-panel{
-            .el-tag{
+          .tag-panel {
+            .el-tag {
               margin-right: 5px;
               margin-bottom: 5px;
             }
@@ -877,7 +886,7 @@ export default {
             height: 100%;
             display: flex;
             align-items: center;
-            color: #8590a6;
+            color: $info-color;
           }
 
           .collect {
@@ -885,7 +894,7 @@ export default {
             cursor: pointer;
             display: flex;
             align-items: center;
-            color: #8590a6;
+            color: $info-color;
 
             div {
               display: flex;
