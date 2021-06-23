@@ -29,7 +29,7 @@
                   <el-row :gutter="8">
                     <el-col :span="12">
                       <el-button type="primary" size="large" plain>
-                        <span class="iconfont icon-answer"></span>&nbsp;替他解答
+                        <i class="iconfont icon-answer"></i>&nbsp;替他解答
                       </el-button>
                     </el-col>
                     <el-col :span="12">
@@ -41,7 +41,7 @@
                           关注问题
                         </div>
                         <div v-else>
-                          <span class="iconfont icon-attention"></span>&nbsp;
+                          <i class="iconfont icon-attention"></i>&nbsp;
                           已关注问题
                         </div>
                       </el-button>
@@ -51,7 +51,7 @@
                 <el-col :span="2">
                   <div class="attention">
                     <el-button type="primary" plain size="large">
-                      <span class="iconfont icon-good"></span>
+                      <i class="iconfont icon-good"></i>
                       188
                     </el-button>
                   </div>
@@ -120,6 +120,7 @@
                 <div class="author-info">
                   <el-avatar :src="squareUrl" shape="square" size="50"></el-avatar>
                   <span class="user-name">孙峻</span>
+                  <span class="send-time">2022-02-24</span>
                 </div>
                 <div class="answer-good-num">
                   <span>有3000人觉得这个回答不错</span>
@@ -141,7 +142,7 @@
                   <el-divider></el-divider>
                   <span v-for="(item,index) in 6" :key="index">
                     <el-link type="primary">我是一个相关问题的标题标题标题标题标题标题标题</el-link>
-                    <el-link type="info">{{index + 1}}个回答</el-link>
+                    <el-link type="info">{{ index + 1 }}个回答</el-link>
                     <el-divider></el-divider>
                   </span>
                 </el-card>
@@ -212,7 +213,7 @@ export default {
 
             span, .el-icon {
               cursor: pointer;
-              color: $info-color;
+              color: $info-color
             }
 
             .iconfont {
@@ -224,30 +225,18 @@ export default {
 
               &.icon-answer {
                 font-size: 18px;
-                font-weight: normal;
               }
             }
 
             .article-browse-info {
               span {
                 font-weight: bold;
+                color: $info-color;
               }
 
               .vertical {
                 display: inline-block;
                 padding: 5px;
-                font-weight: normal;
-              }
-            }
-
-            .el-button {
-              span {
-                color: white;
-              }
-
-              .iconfont, .el-icon {
-                font-weight: normal;
-                color: black;
               }
             }
           }
@@ -280,6 +269,13 @@ export default {
               display: inline-block;
               margin-left: 8px;
             }
+
+            .send-time {
+              font-size: 15px;
+              display: inline-block;
+              margin-left: 5px;
+              color: $info-color;
+            }
           }
 
           .answer-good-num {
@@ -292,14 +288,16 @@ export default {
           }
         }
 
-        .correlation{
+        .correlation {
           margin: 0 20px;
-          .el-card{
-            h3{
+
+          .el-card {
+            h3 {
               padding: 0;
               margin: 0;
             }
-            .el-divider{
+
+            .el-divider {
               margin: 10px 0;
             }
           }

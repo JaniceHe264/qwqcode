@@ -164,7 +164,7 @@
                         测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
                         文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
                       <p>
-                        <el-link type="primary" :underline="false" @click="goDetail(1)">阅读全文</el-link>
+                        <el-link type="primary" :underline="false" @click="goDetail(1 , 'question')">阅读全文</el-link>
                       </p>
                       <div class="btn-group">
                         <el-row>
@@ -264,7 +264,7 @@
                         测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
                         文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
                       <p>
-                        <el-link type="warning" :underline="false">阅读全文</el-link>
+                        <el-link type="warning" :underline="false" @click="goDetail(2,'idea')">阅读全文</el-link>
                       </p>
                       <div class="btn-group">
                         <el-row>
@@ -354,7 +354,9 @@
                         测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
                         文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
                       <p>
-                        <el-link class="blog-link" type="warning" :underline="false">阅读全文</el-link>
+                        <el-link class="blog-link" type="warning" :underline="false" @click="goDetail(3 , 'blog')">
+                          阅读全文
+                        </el-link>
                       </p>
                       <div class="btn-group">
                         <el-row>
@@ -457,7 +459,9 @@
                         </el-row>
                       </div>
                       <p>
-                        <el-link class="blog-link" type="warning" :underline="false">阅读全文</el-link>
+                        <el-link class="blog-link" type="warning" :underline="false" @click="goDetail(4 , 'blog')">
+                          阅读全文
+                        </el-link>
                       </p>
                       <div class="btn-group">
                         <el-row>
@@ -570,12 +574,13 @@ export default {
     }
   },
   methods: {
-    goDetail(id) {
+    goDetail(id, type) {
       this.$router.push({
         path: '/detail',
         name: 'Detail',
         query: {
-          id: 1
+          id: 1,
+          type: type
         }
       })
     },
