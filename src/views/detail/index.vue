@@ -2,6 +2,7 @@
   <div>
     <Question v-if="type == 'question'"/>
     <Idea v-if="type == 'idea'"/>
+    <Blog v-if="type == 'blog'"/>
   </div>
 </template>
 
@@ -9,6 +10,7 @@
 
 import Question from './question'
 import Idea from './idea'
+import Blog from './blog'
 
 export default {
   name: 'Detail',
@@ -23,7 +25,7 @@ export default {
   methods: {},
 
   components: {
-    Question, Idea
+    Question, Idea, Blog
   }
 }
 </script>

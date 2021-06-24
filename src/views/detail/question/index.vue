@@ -4,6 +4,23 @@
       <div class="question">
         <div class="question-content-panel">
           <div class="question-content">
+            <div class="left">
+              <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
+              <div>
+                <div>
+                  <span class="user-name">孙峻</span>
+                  <span class="idea-num">共提出了189个问题</span>
+                </div>
+                <div>
+                  <el-button type="primary" circle plain>
+                    <el-icon>
+                      <Plus/>
+                    </el-icon>
+                    <span>关注</span>
+                  </el-button>
+                </div>
+              </div>
+            </div>
             <h2>我是一个问题的标题</h2>
             <div class="tag-panel">
               <el-tag
@@ -165,6 +182,8 @@ export default {
       questionAttention: false,
       squareUrl:
         require('@/assets/image/shy.png'),
+      meUrl:
+        require('@/assets/image/me.jpg'),
     }
   },
   created() {
@@ -192,6 +211,29 @@ export default {
           margin: auto;
           width: $panel-width;
           min-height: 200px;
+
+          .left {
+            display: flex;
+
+            > div {
+              margin-left: 15px;
+            }
+
+            span {
+              display: inline-block;
+              margin-left: 5px;
+            }
+
+            .user-name {
+              font-size: 16px;
+              font-weight: bold;
+            }
+
+            .idea-num {
+              font-size: 14px;
+              color: $info-color;
+            }
+          }
 
           .tag-panel {
             .el-tag {

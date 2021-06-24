@@ -146,392 +146,10 @@
             </div>
             <div class="body">
               <el-row>
-                <el-col>
-                  <div class="item question">
-                    <!-- 提问 -->
-                    <div>
-                      <h3>这是提问的标题</h3>
-                      <div class="tag-panel">
-                        <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                        <el-tag class="ml-2" type="info">Tag 3</el-tag>
-                        <el-tag class="ml-2" type="warning">Tag 4</el-tag>
-                        <el-tag class="ml-2" type="danger">Tag 5</el-tag>
-                      </div>
-                      <p class="item-text">这是提问的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                        测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                        测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
-                      <p>
-                        <el-link type="primary" :underline="false" @click="goDetail(1 , 'question')">阅读全文</el-link>
-                      </p>
-                      <div class="btn-group">
-                        <el-row>
-                          <el-col :span="6">
-                            <el-row>
-                              <el-col :span="15">
-                                <el-button type="primary" size="large">
-                                  <span class="iconfont icon-answer"></span>&nbsp;给他提建议
-                                </el-button>
-                              </el-col>
-                              <el-col :span="9">
-                                <el-button type="primary" plain size="large">
-                                  <span class="iconfont icon-good"></span>
-                                  <span>188</span>
-                                </el-button>
-                              </el-col>
-                            </el-row>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="comment">
-                              <span class="iconfont icon-comment"></span>
-                              <span>1888条评论</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="collect" @click="questionAttention = !questionAttention">
-                              <div v-if="questionAttention">
-                                <el-icon :size="25">
-                                  <CirclePlus/>
-                                </el-icon>
-                                <span>关注问题</span>
-                              </div>
-                              <div v-else>
-                                <span class="iconfont icon-attention"></span>&nbsp;
-                                <span>已关注问题</span>
-                              </div>
-                            </div>
-                          </el-col>
-                          <el-col :span="2">
-                            <el-popover
-                              placement="bottom"
-                              :width="100"
-                              trigger="click"
-                              popper-class="share-popover"
-                            >
-                              <template #reference>
-                                <div class="share">
-                                  <el-icon :size="25">
-                                    <Promotion/>
-                                  </el-icon>
-                                  <span>分享</span>
-                                </div>
-                              </template>
-                              <div class="share-panel">
-                                <div class="share-item">
-                                  <p>微信扫一扫</p>
-                                </div>
-                              </div>
-                            </el-popover>
-                          </el-col>
-                          <el-col :span="5">
-                            <div class="article-info">
-                              <el-icon :size="25">
-                                <AlarmClock/>
-                              </el-icon>
-                              <span>2022-02-04 12:39</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="4">
-                            <div class="author-info">
-                              <el-icon :size="25">
-                                <UserFilled/>
-                              </el-icon>
-                              <span>孙峻</span>
-                            </div>
-                          </el-col>
-                        </el-row>
-                      </div>
-                    </div>
-                  </div>
-                </el-col>
-                <el-col>
-                  <div class="item idea">
-                    <!-- 想法 -->
-                    <div>
-                      <h3>这是想法的标题</h3>
-                      <div class="tag-panel">
-                        <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                        <el-tag class="ml-2" type="info">Tag 3</el-tag>
-                        <el-tag class="ml-2" type="warning">Tag 4</el-tag>
-                        <el-tag class="ml-2" type="danger">Tag 5</el-tag>
-                      </div>
-                      <p class="item-text">这是想法的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                        测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                        测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
-                      <p>
-                        <el-link type="warning" :underline="false" @click="goDetail(2,'idea')">阅读全文</el-link>
-                      </p>
-                      <div class="btn-group">
-                        <el-row>
-                          <el-col :span="5">
-                            <el-button type="warning" plain size="large">
-                              这是一个好想法&nbsp;
-                              <span class="iconfont icon-good"></span>
-                              <span>188</span>
-                            </el-button>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="comment">
-                              <span class="iconfont icon-comment"></span>
-                              <span>1888条评论</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="collect" @click="ideaLove = !ideaLove">
-                              <div v-if="ideaLove">
-                                <span class="iconfont icon-collect"></span>
-                                <span>收藏想法</span>
-                              </div>
-                              <div v-else>
-                                <span class="iconfont icon-love"></span>&nbsp;
-                                <span>已收藏</span>
-                              </div>
-                            </div>
-                          </el-col>
-                          <el-col :span="2">
-                            <el-popover
-                              placement="bottom"
-                              :width="100"
-                              trigger="click"
-                              popper-class="share-popover"
-                            >
-                              <template #reference>
-                                <div class="share">
-                                  <el-icon :size="25">
-                                    <Promotion/>
-                                  </el-icon>
-                                  <span>分享</span>
-                                </div>
-                              </template>
-                              <div class="share-panel">
-                                <div class="share-item">
-                                  <p>微信扫一扫</p>
-                                </div>
-                              </div>
-                            </el-popover>
-                          </el-col>
-                          <el-col :span="5">
-                            <div class="article-info">
-                              <el-icon :size="25">
-                                <AlarmClock/>
-                              </el-icon>
-                              <span>2022-02-04 12:39</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="4">
-                            <div class="author-info">
-                              <el-icon :size="25">
-                                <UserFilled/>
-                              </el-icon>
-                              <span>孙峻</span>
-                            </div>
-                          </el-col>
-                        </el-row>
-                      </div>
-                    </div>
-                  </div>
-                </el-col>
-                <el-col>
-                  <div class="item blog">
-                    <!-- 博客 -->
-                    <div>
-                      <h3>这是博客的标题</h3>
-                      <div class="tag-panel">
-                        <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                        <el-tag class="ml-2" type="info">Tag 3</el-tag>
-                        <el-tag class="ml-2" type="warning">Tag 4</el-tag>
-                        <el-tag class="ml-2" type="danger">Tag 5</el-tag>
-                      </div>
-                      <p class="item-text">这是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                        测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                        测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
-                      <p>
-                        <el-link class="blog-link" type="warning" :underline="false" @click="goDetail(3 , 'blog')">
-                          阅读全文
-                        </el-link>
-                      </p>
-                      <div class="btn-group">
-                        <el-row>
-                          <el-col :span="5">
-                            <el-button color="#26bfbf" plain size="large">
-                              我觉得很有用&nbsp;
-                              <span class="iconfont icon-good"></span>
-                              <span>188</span>
-                            </el-button>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="comment">
-                              <span class="iconfont icon-comment"></span>
-                              <span>1888条评论</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="collect" @click="blogLove = !blogLove">
-                              <div v-if="blogLove">
-                                <span class="iconfont icon-collect"></span>
-                                <span>收藏博客</span>
-                              </div>
-                              <div v-else>
-                                <span class="iconfont icon-love"></span>&nbsp;
-                                <span>已收藏</span>
-                              </div>
-                            </div>
-                          </el-col>
-                          <el-col :span="2">
-                            <el-popover
-                              placement="bottom"
-                              :width="100"
-                              trigger="click"
-                              popper-class="share-popover"
-                            >
-                              <template #reference>
-                                <div class="share">
-                                  <el-icon :size="25">
-                                    <Promotion/>
-                                  </el-icon>
-                                  <span>分享</span>
-                                </div>
-                              </template>
-                              <div class="share-panel">
-                                <div class="share-item">
-                                  <p>微信扫一扫</p>
-                                </div>
-                              </div>
-                            </el-popover>
-                          </el-col>
-                          <el-col :span="5">
-                            <div class="article-info">
-                              <el-icon :size="25">
-                                <AlarmClock/>
-                              </el-icon>
-                              <span>2022-02-04 12:39</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="4">
-                            <div class="author-info">
-                              <el-icon :size="25">
-                                <UserFilled/>
-                              </el-icon>
-                              <span>孙峻</span>
-                            </div>
-                          </el-col>
-                        </el-row>
-                      </div>
-                    </div>
-                  </div>
-                </el-col>
-                <el-col>
-                  <div class="item blog">
-                    <!-- 博客 -->
-                    <div>
-                      <h3>这是博客的标题</h3>
-                      <div class="tag-panel">
-                        <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                        <el-tag class="ml-2" type="info">Tag 3</el-tag>
-                        <el-tag class="ml-2" type="warning">Tag 4</el-tag>
-                        <el-tag class="ml-2" type="danger">Tag 5</el-tag>
-                      </div>
-                      <div>
-                        <el-row :gutter="20">
-                          <el-col :span="5">
-                            <el-image :src="squareUrl" fit="fill">
-                              <template #placeholder>
-                                <div class="image-slot">Loading<span class="dot">...</span></div>
-                              </template>
-                            </el-image>
-                          </el-col>
-                          <el-col :span="18">
-                            <p class="item-text">这是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                              文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                              测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                              文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字试文字
-                              测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                              文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测 </p>
-                          </el-col>
-                        </el-row>
-                      </div>
-                      <p>
-                        <el-link class="blog-link" type="warning" :underline="false" @click="goDetail(4 , 'blog')">
-                          阅读全文
-                        </el-link>
-                      </p>
-                      <div class="btn-group">
-                        <el-row>
-                          <el-col :span="5">
-                            <el-button color="#26bfbf" plain size="large">
-                              我觉得很有用&nbsp;
-                              <span class="iconfont icon-good"></span>
-                              <span>188</span>
-                            </el-button>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="comment">
-                              <span class="iconfont icon-comment"></span>
-                              <span>1888条评论</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="3">
-                            <div class="collect" @click="blogLove = !blogLove">
-                              <div v-if="blogLove">
-                                <span class="iconfont icon-collect"></span>
-                                <span>收藏博客</span>
-                              </div>
-                              <div v-else>
-                                <span class="iconfont icon-love"></span>&nbsp;
-                                <span>已收藏</span>
-                              </div>
-                            </div>
-                          </el-col>
-                          <el-col :span="2">
-                            <el-popover
-                              placement="bottom"
-                              :width="100"
-                              trigger="click"
-                              popper-class="share-popover"
-                            >
-                              <template #reference>
-                                <div class="share">
-                                  <el-icon :size="25">
-                                    <Promotion/>
-                                  </el-icon>
-                                  <span>分享</span>
-                                </div>
-                              </template>
-                              <div class="share-panel">
-                                <div class="share-item">
-                                  <p>微信扫一扫</p>
-                                </div>
-                              </div>
-                            </el-popover>
-                          </el-col>
-                          <el-col :span="5">
-                            <div class="article-info">
-                              <el-icon :size="25">
-                                <AlarmClock/>
-                              </el-icon>
-                              <span>2022-02-04 12:39</span>
-                            </div>
-                          </el-col>
-                          <el-col :span="4">
-                            <div class="author-info">
-                              <el-icon :size="25">
-                                <UserFilled/>
-                              </el-icon>
-                              <span>孙峻</span>
-                            </div>
-                          </el-col>
-                        </el-row>
-                      </div>
-                    </div>
-                  </div>
+                <el-col v-for="(item , index) in articleList" :key="index">
+                  <QuestionItem v-if="item.type == 'question'"/>
+                  <IdeaItem v-if="item.type == 'idea'"/>
+                  <BlogItem v-if="item.type == 'blog'" :has-first-pic="item.hasFirstPic"/>
                 </el-col>
               </el-row>
             </div>
@@ -544,14 +162,14 @@
 
 <script>
 import {Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled} from '@element-plus/icons-vue'
+import QuestionItem from './item/question'
+import IdeaItem from './item/idea'
+import BlogItem from './item/blog'
 
 export default {
   name: "Home",
   data() {
     return {
-      questionAttention: false,
-      ideaLove: false,
-      blogLove: false,
       navData: [
         {
           name: '推荐'
@@ -565,6 +183,22 @@ export default {
         {
           name: '我发布的'
         },
+      ],
+      articleList: [
+        {
+          type: 'blog',
+          hasFirstPic: false
+        },
+        {
+          type: 'blog',
+          hasFirstPic: true
+        },
+        {
+          type: 'question'
+        },
+        {
+          type: 'idea'
+        }
       ],
       circleUrl:
         require('@/assets/image/me.jpg'),
@@ -589,7 +223,7 @@ export default {
     }
   },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, QuestionItem, IdeaItem, BlogItem
   }
 }
 </script>

@@ -9,8 +9,20 @@
                 <el-col :span="12">
                   <div class="left">
                     <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
-                    <span class="user-name">孙峻</span>
-                    <span class="idea-num">共有189个想法</span>
+                    <div>
+                      <div>
+                        <span class="user-name">孙峻</span>
+                        <span class="idea-num">共有189个想法</span>
+                      </div>
+                      <div>
+                        <el-button type="warning" circle plain>
+                          <el-icon>
+                            <Plus/>
+                          </el-icon>
+                          <span>关注</span>
+                        </el-button>
+                      </div>
+                    </div>
                   </div>
                 </el-col>
                 <el-col :span="12">
@@ -50,6 +62,18 @@
                     </div>
                   </el-col>
                   <el-col :span="2">
+                    <div class="collect" @click="ideaLove = !ideaLove">
+                      <div v-if="ideaLove">
+                        <span class="iconfont icon-collect"></span>
+                        <span>收藏博客</span>
+                      </div>
+                      <div v-else>
+                        <span class="iconfont icon-love"></span>&nbsp;
+                        <span>已收藏</span>
+                      </div>
+                    </div>
+                  </el-col>
+                  <el-col :span="2">
                     <el-popover
                       placement="bottom"
                       :width="100"
@@ -83,43 +107,7 @@
               </div>
               <el-divider></el-divider>
             </div>
-            <div class="comment-panel">
-              <div class="header">
-                <h3>总共18732条评论</h3>
-              </div>
-              <div class="body">
-                <div class="comment-item" v-for="(item,index) in 3" :key="index">
-                  <div class="author-info">
-                    <el-avatar :src="meUrl" :size="35" shape="square"></el-avatar>
-                    <span class="user-name">孙峻</span>
-                    <span class="send-time">评论时间2022-02-24 19:36</span>
-                  </div>
-                  <div class="reply">
-                    <div class="reply-btn">
-                      <el-button size="mini" type="warning">回复</el-button>
-                    </div>
-                    <div class="reply-content">
-                      <p>哈哈哈哈哈哈，一百个都少了</p>
-                    </div>
-                  </div>
-                  <div class="comment-item" v-for="(item,index) in 2" :key="index+10">
-                    <div class="author-info">
-                      <el-avatar :src="meUrl" :size="35" shape="square"></el-avatar>
-                      <span class="user-name">孙峻</span>
-                      <span class="send-time">评论时间2022-02-24 19:36</span>
-                    </div>
-                    <div class="reply">
-                      <div class="reply-btn">
-                        <el-button size="mini" type="warning">回复</el-button>
-                      </div>
-                      <div class="reply-content">
-                        <p>哈哈哈哈哈哈，一百个都少了</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Comment theme-color="#ff9607" :blog-id="1"/>
           </div>
         </el-col>
         <el-col :span="6">
@@ -155,6 +143,8 @@
 
 <script>
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
+import Comment from '../comment'
+
 
 export default {
   name: "Idea",
@@ -162,10 +152,11 @@ export default {
     return {
       meUrl:
         require('@/assets/image/me.jpg'),
+      ideaLove: false
     }
   },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment
   }
 }
 </script>
@@ -182,6 +173,12 @@ export default {
 
     .author-info {
       .left {
+        display: flex;
+
+        > div {
+          margin-left: 15px;
+        }
+
         span {
           display: inline-block;
           margin-left: 5px;
@@ -251,53 +248,9 @@ export default {
             font-size: 18px;
             font-weight: normal;
           }
-        }
-      }
-    }
 
-    .comment-panel {
-      .body {
-        .comment-item {
-          .comment-item {
-            margin-left: 37px;
-          }
-
-          .author-info {
-            display: flex;
-            align-items: flex-end;
-
-            span {
-              display: inline-block;
-            }
-
-            .user-name {
-              font-size: 18px;
-              padding: 0 5px;
-            }
-
-            .send-time {
-              font-size: 15px;
-              color: $info-color;
-            }
-          }
-
-          .reply {
-            margin-left: 37px;
-
-            .reply-btn {
-              .el-button {
-                font-size: 10px;
-                padding: 5px;
-                height: 20px;
-                line-height: 20px;
-              }
-            }
-
-            .reply-content {
-              p {
-                font-size: 14px;
-              }
-            }
+          &.icon-love {
+            font-size: 20px;
           }
         }
       }
