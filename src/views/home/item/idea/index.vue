@@ -22,14 +22,14 @@
           </p>
           <div class="btn-group">
             <el-row>
-              <el-col :span="5">
+              <el-col :span="6">
                 <el-button type="warning" plain size="large">
                   这是一个好想法&nbsp;
                   <span class="iconfont icon-good"></span>
                   <span>188</span>
                 </el-button>
               </el-col>
-              <el-col :span="3">
+              <el-col :span="4">
                 <div class="comment">
                   <span class="iconfont icon-comment"></span>
                   <span>1888条评论</span>

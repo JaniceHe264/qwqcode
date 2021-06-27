@@ -14,16 +14,16 @@
               <el-col :span="10">
                 <el-row>
                   <el-col :span="6">
-                    <div class="header-title-item"><span>首页</span></div>
+                    <div class="header-title-item"><span @click="goto({path:'/', name:'Home'})">首页</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item"><span>分类</span></div>
+                    <div class="header-title-item"><span @click="goto({path:'/category', name:'Category'})">分类</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item"><span>标签</span></div>
+                    <div class="header-title-item"><span @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item"><span>我来回答</span></div>
+                    <div class="header-title-item"><span @click="goto({path:'/question', name:'Question'})">我来回答</span></div>
                   </el-col>
                 </el-row>
               </el-col>
@@ -106,6 +106,10 @@ export default {
   created() {
   },
   methods: {
+    goto(route) {
+      console.log(123)
+      this.$router.push(route);
+    },
     goHome() {
       this.$router.push({
         path: '/home',

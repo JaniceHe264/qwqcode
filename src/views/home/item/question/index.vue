@@ -22,7 +22,7 @@
           </p>
           <div class="btn-group">
             <el-row>
-              <el-col :span="6">
+              <el-col :span="7">
                 <el-row>
                   <el-col :span="15">
                     <el-button type="primary" size="large">
@@ -37,13 +37,13 @@
                   </el-col>
                 </el-row>
               </el-col>
-              <el-col :span="3">
+              <el-col :span="4">
                 <div class="comment">
                   <span class="iconfont icon-comment"></span>
                   <span>1888条评论</span>
                 </div>
               </el-col>
-              <el-col :span="3">
+              <el-col :span="4">
                 <div class="collect" @click="questionAttention = !questionAttention">
                   <div v-if="questionAttention">
                     <el-icon :size="25">
@@ -87,7 +87,7 @@
                   <span>2022-02-04 12:39</span>
                 </div>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="2">
                 <div class="author-info">
                   <el-icon :size="25">
                     <UserFilled/>
