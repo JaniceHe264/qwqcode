@@ -14,102 +14,13 @@
               </div>
             </div>
             <div class="write">
-              <div class="header">
-                <el-row>
-                  <el-col>
-                    <el-row>
-                      <el-col :span="12">
-                        <div class="left">
-                          <span class="iconfont icon-write"></span>
-                          <span>&nbsp;&nbsp;放手去做吧</span>
-                        </div>
-                      </el-col>
-                      <el-col :span="12">
-                        <div class="right">
-                        <span>
-                          草稿箱(0)
-                        </span>
-                        </div>
-                      </el-col>
-                    </el-row>
-                  </el-col>
-                </el-row>
-              </div>
-              <div class="center">
-                <div class="btn-group">
-                  <el-row :gutter="20">
-                    <el-col :span="6">
-                      <div>
-                        <span class="iconfont icon-question"></span><br>
-                        <span class="text-question">提问</span>
-                      </div>
-                    </el-col>
-                    <el-col :span="6">
-                      <div>
-                        <span class="iconfont icon-answer"></span>
-                        <br>
-                        <span class="text-answer">解决问题</span>
-                      </div>
-                    </el-col>
-                    <el-col :span="6">
-                      <div>
-                        <span class="iconfont icon-idea"></span>
-                        <br>
-                        <span class="text-idea">发布想法</span>
-                      </div>
-                    </el-col>
-                    <el-col :span="6">
-                      <div>
-                        <span class="iconfont icon-blog"></span>
-                        <br>
-                        <span class="text-blog">写博客</span>
-                      </div>
-                    </el-col>
-                  </el-row>
-                </div>
-                <div class="text-panel">
-                  <el-row :gutter="20">
-                    <el-col :span="18">
-                      <div class="write-text">
-                        <p>开启你的创作之路吧...</p>
-                      </div>
-                    </el-col>
-                    <el-col :span="6">
-                      <div>
-                        <el-avatar shape="square" :size="50" :src="squareUrl"></el-avatar>
-                      </div>
-                    </el-col>
-                  </el-row>
-                </div>
-              </div>
-              <div class="footer">
-                <el-button auto-insert-space size="large" type="success" plain>
-                  从这里开始
-                  <el-icon class="el-icon--right">
-                    <Plus/>
-                  </el-icon>
-                </el-button>
-              </div>
+              <WritePanel/>
             </div>
-            <HotTopic/>
+            <div class="hot-topic">
+              <HotTopic/>
+            </div>
             <div class="nav">
-              <el-card shadow="hover">
-                <div class="header">
-                  <span>菜单导航</span>&nbsp;<span class="iconfont icon-nav"></span>
-                </div>
-                <div class="nav-item">
-                  <span class="iconfont icon-attention"></span>
-                  <span>已关注问题</span>
-                </div>
-                <div class="nav-item">
-                  <span class="iconfont icon-history"></span>
-                  <span>浏览足迹</span>
-                </div>
-                <div class="nav-item">
-                  <span class="iconfont icon-collect"></span>
-                  <span>我的收藏</span>
-                </div>
-              </el-card>
+              <NavPanel/>
             </div>
           </div>
         </el-col>
@@ -146,6 +57,8 @@ import QuestionItem from './item/question'
 import IdeaItem from './item/idea'
 import BlogItem from './item/blog'
 import HotTopic from '@/components/base/HotTopic'
+import WritePanel from '@/components/base/WritePanel'
+import NavPanel from "@/components/base/NavPanel";
 
 export default {
   name: "Home",
@@ -204,7 +117,8 @@ export default {
     }
   },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, QuestionItem, IdeaItem, BlogItem, HotTopic
+    NavPanel, QuestionItem, IdeaItem, BlogItem, HotTopic, WritePanel,
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
   }
 }
 </script>
@@ -249,158 +163,9 @@ export default {
       }
 
       .write {
-
-        border-radius: $panel-radius;
-        padding: 10px;
-        border: 1px solid gainsboro;
         margin: 20px 0;
-
-        &:hover {
-          box-shadow: $panel-shadow;
-          transition: box-shadow .6s;
-        }
-
-        .header {
-          height: 30px;
-          line-height: 30px;
-          margin-bottom: 15px;
-
-          .left {
-            text-align: left;
-
-            .iconfont {
-              font-size: 24px;
-              color: $theme-color;
-            }
-
-            span:last-child {
-              font-size: 16px;
-              font-weight: bold;
-            }
-          }
-
-          .right {
-            text-align: right;
-
-            span {
-              font-size: 14px;
-              color: $info-color;
-              cursor: pointer;
-            }
-          }
-        }
-
-        .center {
-          .btn-group {
-            div {
-              text-align: center;
-              cursor: pointer;
-
-              [class^='text'] {
-                font-size: 14px;
-              }
-
-              .iconfont {
-                display: inline-block;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                line-height: 50px;
-                font-size: 24px;
-                font-weight: bold;
-
-                &.icon-question {
-                  background-color: $nav-btn-question-back;
-                  color: $nav-btn-question-icon;
-                }
-
-                &.icon-answer {
-                  background-color: $nav-btn-answer-back;
-                  color: $nav-btn-answer-icon;
-                }
-
-                &.icon-idea {
-                  background-color: $nav-btn-idea-back;
-                  color: $nav-btn-idea-icon;
-                }
-
-                &.icon-blog {
-                  background-color: $nav-btn-blog-back;
-                  color: $nav-btn-blog-icon;
-                }
-
-              }
-            }
-          }
-
-          .text-panel {
-            padding: 30px 0;
-
-            .write-text {
-              text-align: center;
-            }
-          }
-
-        }
-
-        .footer {
-          text-align: center;
-
-          .el-button {
-            width: 80%;
-          }
-        }
       }
 
-      .nav {
-        margin-top: 20px;
-
-        ::v-deep .el-card__body {
-          padding: 20px 0;
-        }
-
-        .header {
-          .iconfont {
-            font-size: 25px;
-            color: $nav-header-icon;
-          }
-
-          padding-left: 10px;
-          margin-bottom: 10px;
-        }
-
-        .nav-item {
-          cursor: pointer;
-          height: 45px;
-          line-height: 45px;
-          padding-left: 20px;
-
-          &:hover {
-            background-color: #f6f6f6;
-          }
-
-          .iconfont {
-            font-size: 23px;
-            font-weight: bold;
-
-            &.icon-attention {
-              color: $nav-item-attention-icon;
-            }
-
-            &.icon-history {
-              color: $nav-item-history-icon;
-            }
-
-            &.icon-collect {
-              color: $nav-item-collect-icon;
-            }
-
-            &:after {
-              content: ' ';
-            }
-          }
-        }
-      }
     }
 
     .right {

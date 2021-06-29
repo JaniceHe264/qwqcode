@@ -14,16 +14,18 @@
               <el-col :span="10">
                 <el-row>
                   <el-col :span="6">
-                    <div class="header-title-item"><span @click="goto({path:'/', name:'Home'})">首页</span></div>
+                    <div class="header-title-item" :class="{active: $route.path == '/home'}"><span @click="goto({path:'/', name:'Home'})">首页</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item"><span @click="goto({path:'/category', name:'Category'})">分类</span></div>
+                    <div class="header-title-item" :class="{active: $route.path == '/category'}"><span @click="goto({path:'/category', name:'Category'})">分类</span>
+                    </div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item"><span @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
+                    <div class="header-title-item" :class="{active: $route.path == '/tag'}"><span @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item"><span @click="goto({path:'/question', name:'Question'})">我来回答</span></div>
+                    <div class="header-title-item" :class="{active: $route.path == '/question'}"><span @click="goto({path:'/question', name:'Question'})">我来回答</span>
+                    </div>
                   </el-col>
                 </el-row>
               </el-col>
@@ -164,9 +166,14 @@ export default {
 
       span {
         font-size: 20px;
+
+        &:hover {
+          color: $theme-color;
+          transition: color .3s;
+        }
       }
 
-      :hover {
+      &.active {
         color: $theme-color;
         transition: color .3s;
       }
