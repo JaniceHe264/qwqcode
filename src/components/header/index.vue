@@ -62,7 +62,7 @@
                   <el-row>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false" class="avatar-link">个人资料</el-link>
+                        <el-link :underline="false" class="avatar-link" @click="goto({path: '/personal' , name: 'Personal'})">个人资料</el-link>
                       </div>
                     </el-col>
                     <el-col>
