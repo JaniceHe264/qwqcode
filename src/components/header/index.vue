@@ -15,20 +15,20 @@
                 <el-row>
                   <el-col :span="6">
                     <div class="header-title-item" :class="{active: $route.path == '/home'}"><span
-                        @click="goto({path:'/', name:'Home'})">首页</span></div>
+                      @click="goto({path:'/', name:'Home'})">首页</span></div>
                   </el-col>
                   <el-col :span="6">
                     <div class="header-title-item" :class="{active: $route.path == '/category'}"><span
-                        @click="goto({path:'/category', name:'Category'})">分类</span>
+                      @click="goto({path:'/category', name:'Category'})">分类</span>
                     </div>
                   </el-col>
                   <el-col :span="6">
                     <div class="header-title-item" :class="{active: $route.path == '/tag'}"><span
-                        @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
+                      @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
                   </el-col>
                   <el-col :span="6">
                     <div class="header-title-item" :class="{active: $route.path == '/question'}"><span
-                        @click="goto({path:'/question', name:'Question'})">我来回答</span>
+                      @click="goto({path:'/question', name:'Question'})">我来回答</span>
                     </div>
                   </el-col>
                 </el-row>
@@ -45,7 +45,9 @@
                     </el-input>
                   </el-col>
                   <el-col :span="6">
-                    <el-button type="success" size="large" class="sub-question-btn">提出问题</el-button>
+                    <el-button type="success" size="large" class="sub-question-btn" @click="openSendQuestion">提出问题
+                    </el-button>
+                    <SendQuestion :dialog-visible="showSendQuestion" @closed="closeSendQuestion"/>
                   </el-col>
                 </el-row>
               </el-col>
@@ -54,7 +56,7 @@
         </el-col>
         <el-col :span="4">
           <div class="right">
-            <el-popover v-if="false"
+            <el-popover v-if="true"
                         placement="bottom"
                         :width="150"
                         trigger="click"
@@ -97,7 +99,8 @@
           </div>
         </el-col>
       </el-row>
-      <Login :dialog-visible="showLogin" :login-type="loginType" @dialogClosed="dialogClosed" @changeLoginStatus="openLogin"/>
+      <Login :dialog-visible="showLogin" :login-type="loginType" @dialogClosed="dialogClosed"
+             @changeLoginStatus="openLogin"/>
     </div>
   </el-affix>
 </template>
@@ -105,6 +108,7 @@
 <script>
 import {Search} from '@element-plus/icons-vue'
 import Login from "@/components/base/Login";
+import SendQuestion from "@/components/base/SendQuestion";
 
 export default {
   name: "Header",
@@ -113,17 +117,25 @@ export default {
       keyword: '',
       showLogin: false,
       circleUrl:
-          require('@/assets/image/me.jpg'),
-      loginType: 'login'
+        require('@/assets/image/me.jpg'),
+      loginType: 'login',
+      showSendQuestion: false,
     }
   },
   components: {
+    SendQuestion,
     Login,
     Search
   },
   created() {
   },
   methods: {
+    openSendQuestion() {
+      this.showSendQuestion = true
+    },
+    closeSendQuestion(closed) {
+      this.showSendQuestion = !closed;
+    },
     dialogClosed(closed) {
       this.showLogin = !closed;
     },

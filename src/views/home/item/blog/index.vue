@@ -45,9 +45,12 @@
                 </el-button>
               </el-col>
               <el-col :span="4">
-                <div class="comment">
+                <div class="comment" @click="sendComment">
                   <span class="iconfont icon-comment"></span>
                   <span>1888条评论</span>
+                </div>
+                <div class="send-comment">
+                  <SendComment :dialog-visible="showSendComment" @closed="closeSendComment"/>
                 </div>
               </el-col>
               <el-col :span="3">
@@ -110,6 +113,7 @@
 
 <script>
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
+import SendComment from "@/components/base/SendComment";
 
 export default {
   name: "BlogItem",
@@ -120,19 +124,26 @@ export default {
         require('@/assets/image/me.jpg'),
       squareUrl:
         require('@/assets/image/shy.png'),
-      contentHoldNum: 24
+      contentHoldNum: 24,
+      showSendComment: false
     }
   },
-  props:{
-    hasFirstPic:{
+  props: {
+    hasFirstPic: {
       default: false,
       type: Boolean
     }
   },
-  created(){
+  created() {
     this.contentHoldNum = this.hasFirstPic ? 18 : 24
   },
   methods: {
+    closeSendComment(closed) {
+      this.showSendComment = !closed;
+    },
+    sendComment() {
+      this.showSendComment = true
+    },
     goDetail(id, type) {
       this.$router.push({
         path: '/detail',
@@ -145,6 +156,7 @@ export default {
     },
   },
   components: {
+    SendComment,
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
   }
 }
