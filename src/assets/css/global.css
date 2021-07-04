@@ -47,3 +47,11 @@ html, body {
 .el-popover.share-popover .share-panel .share-item:hover {
   background-color: #f6f6f6;
 }
+
+/**
+ * element-ui plus 输入框聚焦边框颜色
+ */
+.el-input__inner:focus {
+  outline: 0;
+  border-color: #17a788;
+}

@@ -14,17 +14,21 @@
               <el-col :span="10">
                 <el-row>
                   <el-col :span="6">
-                    <div class="header-title-item" :class="{active: $route.path == '/home'}"><span @click="goto({path:'/', name:'Home'})">首页</span></div>
+                    <div class="header-title-item" :class="{active: $route.path == '/home'}"><span
+                        @click="goto({path:'/', name:'Home'})">首页</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item" :class="{active: $route.path == '/category'}"><span @click="goto({path:'/category', name:'Category'})">分类</span>
+                    <div class="header-title-item" :class="{active: $route.path == '/category'}"><span
+                        @click="goto({path:'/category', name:'Category'})">分类</span>
                     </div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item" :class="{active: $route.path == '/tag'}"><span @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
+                    <div class="header-title-item" :class="{active: $route.path == '/tag'}"><span
+                        @click="goto({path:'/tag', name:'Tag'})">标签</span></div>
                   </el-col>
                   <el-col :span="6">
-                    <div class="header-title-item" :class="{active: $route.path == '/question'}"><span @click="goto({path:'/question', name:'Question'})">我来回答</span>
+                    <div class="header-title-item" :class="{active: $route.path == '/question'}"><span
+                        @click="goto({path:'/question', name:'Question'})">我来回答</span>
                     </div>
                   </el-col>
                 </el-row>
@@ -50,19 +54,21 @@
         </el-col>
         <el-col :span="4">
           <div class="right">
-            <el-popover
-              placement="bottom"
-              :width="150"
-              trigger="click"
-              center
-              popper-class="popover-panel"
+            <el-popover v-if="false"
+                        placement="bottom"
+                        :width="150"
+                        trigger="click"
+                        center
+                        popper-class="popover-panel"
             >
               <template #default>
                 <div class="avatar-menu">
                   <el-row>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false" class="avatar-link" @click="goto({path: '/personal' , name: 'Personal'})">个人资料</el-link>
+                        <el-link :underline="false" class="avatar-link"
+                                 @click="goto({path: '/personal' , name: 'Personal'})">个人资料
+                        </el-link>
                       </div>
                     </el-col>
                     <el-col>
@@ -83,31 +89,44 @@
                 <el-avatar class="avatar" :src="circleUrl" :size="45"></el-avatar>
               </template>
             </el-popover>
+            <div class="login-btn" v-else>
+              <span class="login" @click="openLogin('login')">登录</span>
+              <span class="vertical">|</span>
+              <span class="register" @click="openLogin('register')">注册</span>
+            </div>
           </div>
         </el-col>
       </el-row>
+      <Login :dialog-visible="showLogin" :login-type="loginType" @dialogClosed="dialogClosed" @changeLoginStatus="openLogin"/>
     </div>
   </el-affix>
 </template>
 
 <script>
 import {Search} from '@element-plus/icons-vue'
+import Login from "@/components/base/Login";
 
 export default {
   name: "Header",
   data() {
     return {
       keyword: '',
+      showLogin: false,
       circleUrl:
-        require('@/assets/image/me.jpg'),
+          require('@/assets/image/me.jpg'),
+      loginType: 'login'
     }
   },
   components: {
+    Login,
     Search
   },
   created() {
   },
   methods: {
+    dialogClosed(closed) {
+      this.showLogin = !closed;
+    },
     goto(route) {
       console.log(123)
       this.$router.push(route);
@@ -117,6 +136,10 @@ export default {
         path: '/home',
         name: 'Home'
       })
+    },
+    openLogin(loginType) {
+      this.showLogin = true
+      this.loginType = loginType
     }
   }
 }
@@ -199,6 +222,24 @@ export default {
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
+    }
+
+    .login-btn {
+      span {
+        cursor: pointer;
+      }
+
+      .login, .register {
+        &:hover {
+          color: $theme-color;
+          transition: color .3s;
+        }
+      }
+
+      .vertical {
+        display: inline-block;
+        padding: 0 10px;
+      }
     }
   }
 }
