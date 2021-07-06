@@ -56,9 +56,13 @@
                     </div>
                   </el-col>
                   <el-col :span="3">
-                    <div class="comment">
+                    <div class="comment" @click="sendComment">
                       <span class="iconfont icon-comment"></span>
                       <span>1888条评论</span>
+                    </div>
+                    <div class="send-comment">
+                      <SendComment :dialog-visible="showSendComment" :article-info="ideaInfo"
+                                   @closed="closeSendComment" theme-color="#ff9607"/>
                     </div>
                   </el-col>
                   <el-col :span="2">
@@ -107,7 +111,7 @@
               </div>
               <el-divider></el-divider>
             </div>
-            <Comment theme-color="#ff9607" :blog-id="1"/>
+            <Comment theme-color="#ff9607" :article-info="ideaInfo"/>
           </div>
         </el-col>
         <el-col :span="6">
@@ -144,7 +148,7 @@
 <script>
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
 import Comment from '../comment'
-
+import SendComment from "@/components/base/SendComment";
 
 export default {
   name: "Idea",
@@ -152,11 +156,24 @@ export default {
     return {
       meUrl:
         require('@/assets/image/me.jpg'),
-      ideaLove: false
+      ideaLove: false,
+      showSendComment: false,
+      ideaInfo: {
+        title: '我是想法标题',
+        content: '我是想法内容'
+      }
     }
   },
+  methods: {
+    closeSendComment(closed) {
+      this.showSendComment = !closed;
+    },
+    sendComment() {
+      this.showSendComment = true
+    },
+  },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment
   }
 }
 </script>

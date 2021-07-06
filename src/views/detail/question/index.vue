@@ -74,9 +74,13 @@
                   </div>
                 </el-col>
                 <el-col :span="3">
-                  <div class="comment">
+                  <div class="comment" @click="sendComment">
                     <span class="iconfont icon-comment"></span>
                     <span>1888条评论</span>
+                  </div>
+                  <div class="send-comment">
+                    <SendComment :dialog-visible="showSendComment" :article-info="questionInfo"
+                                 @closed="closeSendComment" theme-color="#0066ff"/>
                   </div>
                 </el-col>
                 <el-col :span="2">
@@ -126,31 +130,36 @@
             </div>
           </div>
         </div>
+
         <div class="question-answer-panel">
           <el-row>
             <el-col :span="18">
-              <div class="answer-header">
-                <h3>23672个回答</h3>
-                <el-divider></el-divider>
-              </div>
-              <div class="answer-content" v-for="(item , index) in 6" :key="index">
-                <div class="author-info">
-                  <el-avatar :src="squareUrl" shape="square" size="50"></el-avatar>
-                  <span class="user-name">孙峻</span>
-                  <span class="send-time">2022-02-24</span>
-                </div>
-                <div class="answer-good-num">
-                  <span>有3000人觉得这个回答不错</span>
-                </div>
-                <div class="answer-info">
-                  <p>我是回答这个问题的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
-                    字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                    文字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字 字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文
-                    字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试</p>
-                </div>
-                <el-button type="primary" plain><span class="iconfont icon-good"></span>我觉得很不错</el-button>
-                <el-divider></el-divider>
-              </div>
+              <el-tabs v-model="activeName">
+                <el-tab-pane label="23672个回答" name="answer">
+                  <div class="answer-content" v-for="(item , index) in 6" :key="index">
+                    <div class="author-info">
+                      <el-avatar :src="squareUrl" shape="square" size="50"></el-avatar>
+                      <span class="user-name">孙峻</span>
+                      <span class="send-time">2022-02-24</span>
+                    </div>
+                    <div class="answer-good-num">
+                      <span>有3000人觉得这个回答不错</span>
+                    </div>
+                    <div class="answer-info">
+                      <p>我是回答这个问题的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
+                        字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
+                        文字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字 字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文
+                        字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试</p>
+                    </div>
+                    <el-button type="primary" plain><span class="iconfont icon-good"></span>我觉得很不错</el-button>
+                    <el-divider></el-divider>
+                  </div>
+                </el-tab-pane>
+                <el-tab-pane label="评论" name="second">
+                  <Comment theme-color="#0066ff" :article-info="questionInfo"/>
+                </el-tab-pane>
+              </el-tabs>
+
             </el-col>
             <el-col :span="6">
               <div class="correlation">
@@ -167,6 +176,7 @@
             </el-col>
           </el-row>
         </div>
+
       </div>
     </div>
   </div>
@@ -174,23 +184,40 @@
 
 <script>
 import {Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled} from '@element-plus/icons-vue'
+import SendComment from "@/components/base/SendComment";
+import Comment from "@/views/detail/comment/index";
 
 export default {
   name: "index",
   data() {
     return {
+      activeName: 'answer',
       questionAttention: false,
       squareUrl:
         require('@/assets/image/shy.png'),
       meUrl:
         require('@/assets/image/me.jpg'),
+      showSendComment: false,
+      questionInfo: {
+        title: '我是问题标题',
+        content: '我是问题内容'
+      }
     }
   },
   created() {
   },
-  methods: {},
+  methods: {
+    closeSendComment(closed) {
+      this.showSendComment = !closed;
+    },
+    sendComment() {
+      console.log(123)
+      this.showSendComment = true
+    },
+  },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
+    Comment,
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, SendComment
   }
 }
 </script>

@@ -49,9 +49,9 @@
                   <span class="iconfont icon-comment"></span>
                   <span>1888条评论</span>
                 </div>
-                <div class="send-comment">
-                  <SendComment :dialog-visible="showSendComment" @closed="closeSendComment"/>
-                </div>
+<!--                <div class="send-comment">-->
+<!--                  <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" @closed="closeSendComment"/>-->
+<!--                </div>-->
               </el-col>
               <el-col :span="3">
                 <div class="collect" @click="blogLove = !blogLove">
@@ -125,7 +125,11 @@ export default {
       squareUrl:
         require('@/assets/image/shy.png'),
       contentHoldNum: 24,
-      showSendComment: false
+      showSendComment: false,
+      blogInfo: {
+        title: '我是博客标题',
+        content: '我是博客内容'
+      }
     }
   },
   props: {

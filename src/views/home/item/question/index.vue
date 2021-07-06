@@ -108,12 +108,13 @@ import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element
 
 export default {
   name: "QuestionItem",
-  data(){
+  data() {
     return {
       questionAttention: false,
     }
   },
-  methods:{
+  methods: {
+
     goDetail(id, type) {
       this.$router.push({
         path: '/detail',

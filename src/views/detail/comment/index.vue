@@ -14,7 +14,7 @@
             </div>
             <div class="reply">
               <div class="reply-btn">
-                <el-button size="mini" type="primary" :color="themeColor">回复</el-button>
+                <el-button size="mini" type="primary" :color="themeColor" @click="reply">回复</el-button>
               </div>
               <div class="reply-content">
                 <p>哈哈哈哈哈哈，一百个都少了</p>
@@ -28,7 +28,7 @@
               </div>
               <div class="reply">
                 <div class="reply-btn">
-                  <el-button size="mini" type="primary" :color="themeColor">回复</el-button>
+                  <el-button size="mini" type="primary" :color="themeColor" @click="reply">回复</el-button>
                 </div>
                 <div class="reply-content">
                   <p>哈哈哈哈哈哈，一百个都少了</p>
@@ -39,16 +39,28 @@
         </div>
       </div>
     </div>
+    <SendComment :dialog-visible="showSendComment" :article-info="articleInfo" :is-reply="true"
+                 :reply-comment="replyComment" @closed="closeSendComment" :theme-color="themeColor"/>
   </div>
 </template>
 
 <script>
+import SendComment from "@/components/base/SendComment";
+
 export default {
   name: "Comment",
+  components: {SendComment},
   data() {
     return {
       meUrl:
         require('@/assets/image/me.jpg'),
+      showSendComment: false,
+      replyComment: {
+        authorInfo: {
+          username: '孙峻'
+        },
+        commentContent: '真好'
+      }
     }
   },
   props: {
@@ -56,12 +68,28 @@ export default {
       default: '#26bfbf',
       type: String
     },
-    blogId: {
-      type: Number,
+    articleInfo: {
+      type: Object,
       required: true
     }
   },
   created() {
+  },
+  methods: {
+    closeSendComment(closed) {
+      this.showSendComment = !closed
+    },
+    reply() {
+      // 设置当前回复的评论信息
+      this.replyComment = {
+        authorInfo: {
+          username: '孙峻'
+        },
+        commentContent: '真好'
+      }
+      // 打开评论面板
+      this.showSendComment = true
+    }
   }
 }
 </script>

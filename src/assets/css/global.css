@@ -39,7 +39,7 @@ html, body {
   line-height: 40px;
 }
 
-.el-popover.share-popover .share-panel .share-item p{
+.el-popover.share-popover .share-panel .share-item p {
   padding: 0;
   margin: 0;
 }
@@ -54,4 +54,11 @@ html, body {
 .el-input__inner:focus {
   outline: 0;
   border-color: #17a788;
+}
+
+/**
+ * dialog 关闭按钮hover颜色
+ */
+.el-dialog .el-dialog__header .el-dialog__headerbtn:hover .el-icon.el-dialog__close{
+  color: #17a788;
 }

@@ -3,20 +3,23 @@
     <div class="panel">
       <el-dialog
         v-model="dialogVisible"
-        title="Tips"
+        :is-reply="isReply"
+        :reply-comment="replyComment"
         width="30%"
         :lock-scroll="false"
         :before-close="handleClose"
       >
-        <span>This is a message</span>
-        <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="handleClose">Cancel</el-button>
-        <el-button type="primary" @click="handleClose"
-        >Confirm</el-button
-        >
-      </span>
-        </template>
+        <div class="info-panel">
+          <h3>评论文章：{{ articleInfo.title }}</h3>
+          <span v-if="isReply">@{{ replyComment.authorInfo.username }}: {{ replyComment.commentContent }}</span>
+        </div>
+        <div class="input-panel">
+          <el-input type="textarea" v-model="commentContent" placeholder="输入您评论的内容" :rows="3" show-word-limit
+                    maxlength="50"></el-input>
+          <div class="send-btn">
+            <el-button type="primary" :color="themeColor">发布评论</el-button>
+          </div>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -25,11 +28,46 @@
 <script>
 export default {
   name: "SendComment",
+  data() {
+    return {
+      commentContent: ''
+    }
+  },
   props: {
+    themeColor: {
+      type: String,
+      default: '#17a788'
+    },
     dialogVisible: {
       type: Boolean,
       default: false
+    },
+    articleInfo: {
+      type: Object,
+      required: true
+    },
+    isReply: {
+      type: Boolean,
+      default: false
+    },
+    replyComment: {
+      type: Object,
+      required: false
     }
+  },
+  watch: {
+    dialogVisible(newVal, oldVal) {
+      if (newVal) {
+        if (this.isReply) {
+          if (!this.replyComment) {
+            this.$notify.error('回复评论失败，评论信息有误')
+            this.handleClose()
+          }
+        }
+      }
+    }
+  },
+  created() {
   },
   methods: {
     handleClose() {
@@ -39,6 +77,32 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.send-comment {
+  .panel {
+    ::v-deep .el-dialog__header {
+      padding: 0;
+    }
+
+    ::v-deep .el-dialog__body {
+      padding: var(--el-dialog-padding-primary) var(--el-dialog-padding-primary);
+      color: var(--el-text-color-regular);
+      font-size: var(--el-dialog-content-font-size);
+      word-break: break-all;
+    }
+
+    .input-panel {
+      ::v-deep .el-textarea__inner:focus {
+        outline: 0;
+        border-color: $theme-color;
+      }
+
+      .send-btn {
+        margin: 10px 0;
+        text-align: right;
+      }
+    }
+  }
+}
 
 </style>
