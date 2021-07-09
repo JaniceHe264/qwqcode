@@ -59,6 +59,74 @@ html, body {
 /**
  * dialog 关闭按钮hover颜色
  */
-.el-dialog .el-dialog__header .el-dialog__headerbtn:hover .el-icon.el-dialog__close{
+.el-dialog .el-dialog__header .el-dialog__headerbtn:hover .el-icon.el-dialog__close {
   color: #17a788;
 }
+
+/**
+ * 发布文章 图片弹出框样式
+ */
+.el-popover.upload-popover .upload-again {
+  text-align: center;
+}
+
+/**
+ * 发布文章 标题输入框、前缀按钮样式
+ */
+.send-article .panel .article-title .el-input-group__append, .el-input-group__prepend {
+  background-color: #26bfbf !important;
+  color: white !important;
+  vertical-align: middle;
+  display: table-cell;
+  position: relative;
+  border: 1px solid #26bfbf;
+  /*border-radius: var(--el-input-border-radius);*/
+  padding: 0 20px;
+  width: 1px;
+  white-space: nowrap;
+}
+
+/**
+ * 博客
+ */
+.send-article .panel .article-title.blog .el-input-group__prepend {
+  background-color: #26bfbf !important;
+  border: 1px solid #26bfbf;
+}
+
+.send-article .panel .article-title.blog .el-input__inner:focus {
+  outline: 0;
+  border-color: #26bfbf !important;
+}
+
+/**
+ * 想法
+ */
+.send-article .panel .article-title.idea .el-input-group__prepend {
+  background-color: #f4c807 !important;
+  border: 1px solid #f4c807;
+}
+
+.send-article .panel .article-title.idea .el-input__inner:focus {
+  outline: 0;
+  border-color: #f4c807 !important;
+}
+
+/**
+ * 文章选择标签选择框样式
+ */
+
+/**
+ * 博客
+ */
+.send-article .panel .btn-group.blog .el-select .el-input.is-focus .el-input__inner {
+  border-color: #26bfbf !important;
+}
+
+/**
+ * 想法
+ */
+.send-article .panel .btn-group.idea .el-select .el-input.is-focus .el-input__inner {
+  border-color: #f4c807 !important;
+}
+

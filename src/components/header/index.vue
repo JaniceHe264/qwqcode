@@ -69,18 +69,19 @@
                     <el-col>
                       <div class="avatar-item">
                         <el-link :underline="false" class="avatar-link"
-                                 @click="goto({path: '/personal' , name: 'Personal'})">个人资料
+                                 @click="goto({path: '/personal' , name: 'Personal'})"><i
+                          class="iconfont icon-personal-data"></i>个人资料
                         </el-link>
                       </div>
                     </el-col>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false">后台管理</el-link>
+                        <el-link :underline="false"><i class="iconfont icon-back-manage"></i>后台管理</el-link>
                       </div>
                     </el-col>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false">退出</el-link>
+                        <el-link :underline="false"><i class="iconfont icon-exit"></i>退出</el-link>
                       </div>
                     </el-col>
                   </el-row>

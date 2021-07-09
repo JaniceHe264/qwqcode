@@ -25,27 +25,27 @@
       <div class="btn-group">
         <el-row :gutter="20">
           <el-col :span="6">
-            <div>
+            <div @click="openSendQuestion">
               <span class="iconfont icon-question"></span><br>
               <span class="text-question">提问</span>
             </div>
           </el-col>
           <el-col :span="6">
-            <div>
+            <div @click="goto({path:'/question',name:'Question'})">
               <span class="iconfont icon-answer"></span>
               <br>
               <span class="text-answer">解决问题</span>
             </div>
           </el-col>
           <el-col :span="6">
-            <div>
+            <div @click="goto({path: '/send-article', name: 'SendArticle' , query:{type: 'idea'}})">
               <span class="iconfont icon-idea"></span>
               <br>
               <span class="text-idea">发布想法</span>
             </div>
           </el-col>
           <el-col :span="6">
-            <div>
+            <div @click="goto({path: '/send-article', name: 'SendArticle' , query:{type: 'blog'}})">
               <span class="iconfont icon-blog"></span>
               <br>
               <span class="text-blog">写博客</span>
@@ -69,18 +69,21 @@
       </div>
     </div>
     <div class="footer">
-      <el-button auto-insert-space size="large" type="success" plain>
+      <el-button auto-insert-space size="large" type="success" plain
+                 @click="goto({path: '/send-article' , name: 'SendArticle', query: {type: 'blog'}})">
         从这里开始
         <el-icon class="el-icon--right">
           <Plus/>
         </el-icon>
       </el-button>
     </div>
+    <SendQuestion :dialog-visible="showSendQuestion" @closed="closeSendQuestion"/>
   </div>
 </template>
 
 <script>
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
+import SendQuestion from "@/components/base/SendQuestion";
 
 export default {
   name: "WritePanel",
@@ -88,9 +91,22 @@ export default {
     return {
       squareUrl:
         require('@/assets/image/shy.png'),
+      showSendQuestion: false
+    }
+  },
+  methods: {
+    closeSendQuestion(closed) {
+      this.showSendQuestion = !closed;
+    },
+    openSendQuestion() {
+      this.showSendQuestion = true;
+    },
+    goto(route) {
+      this.$router.push(route);
     }
   },
   components: {
+    SendQuestion,
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
   }
 }

@@ -14,7 +14,7 @@
           <span v-if="isReply">@{{ replyComment.authorInfo.username }}: {{ replyComment.commentContent }}</span>
         </div>
         <div class="input-panel">
-          <el-input type="textarea" v-model="commentContent" placeholder="输入您评论的内容" :rows="3" show-word-limit
+          <el-input type="textarea" resize="none" v-model="commentContent" placeholder="输入您评论的内容" :rows="3" show-word-limit
                     maxlength="50"></el-input>
           <div class="send-btn">
             <el-button type="primary" :color="themeColor">发布评论</el-button>

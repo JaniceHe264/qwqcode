@@ -7,13 +7,13 @@
             <div class="header">
               <el-row>
                 <el-col :span="3">
-                  <el-button type="primary" plain size="large">为你推荐</el-button>
+                  <el-button type="primary" plain size="large"><i class="iconfont icon-recommend"></i>为你推荐</el-button>
                 </el-col>
                 <el-col :span="3">
-                  <el-button type="primary" plain size="large">最新问题</el-button>
+                  <el-button type="primary" plain size="large"><i class="iconfont icon-best-new"></i>最新问题</el-button>
                 </el-col>
                 <el-col :span="3">
-                  <el-button type="primary" plain size="large">热门问题</el-button>
+                  <el-button type="primary" plain size="large"><i class="iconfont icon-hot-text"></i>热门问题</el-button>
                 </el-col>
               </el-row>
               <el-divider></el-divider>

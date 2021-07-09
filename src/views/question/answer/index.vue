@@ -24,7 +24,7 @@
         </el-col>
         <el-col :span="6">
           <div class="right">
-            <el-button type="primary" size="large">写回答</el-button>
+            <el-button type="primary" size="large"><i class="iconfont icon-raise-hands"></i>写回答</el-button>
           </div>
         </el-col>
       </el-row>
