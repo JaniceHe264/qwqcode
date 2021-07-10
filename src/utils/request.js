@@ -10,4 +10,9 @@ const request = axios.create({
   baseURL: baseApi,
 })
 
+request.interceptors.response.use(res => {
+  const result = res.data;
+  return Promise.resolve(result)
+})
+
 export default request

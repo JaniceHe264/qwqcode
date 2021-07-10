@@ -42,14 +42,19 @@
                   </el-input>
                 </el-col>
                 <el-col :span="6">
-                  <span>123123</span>
+                  <div @click="getCaptcha" class="captcha">
+                    <el-image
+                      style="width: 100%; height: 35px"
+                      :src="captchaUrl"
+                    ></el-image>
+                  </div>
                 </el-col>
               </el-row>
             </el-form-item>
             <el-form-item>
               <el-row>
                 <el-col>
-                  <el-button color="#17a788" type="primary" plain>确认登录</el-button>
+                  <el-button color="#17a788" type="primary" plain @click="subLogin">确认登录</el-button>
                 </el-col>
                 <el-col>
                   <el-row>
@@ -117,14 +122,18 @@
 
 import {Cellphone} from '@element-plus/icons-vue'
 
+import {captcha, login} from '@/api/auth'
+
 export default {
   name: "Login",
   data() {
     return {
+      captchaUrl: '',
       loginForm: {
         username: '',
         password: '',
-        authCode: ''
+        code: '',
+        key: ''
       },
       registerForm: {
         username: '',
@@ -146,9 +155,22 @@ export default {
     }
   },
   created() {
-    console.log(this.loginType)
+    // console.log(this.loginType)
+    this.getCaptcha()
   },
   methods: {
+    subLogin() {
+      login().then(res => {
+        console.log(res);
+      })
+    },
+    getCaptcha() {
+      captcha().then(res => {
+        console.log(res);
+        this.captchaUrl = res.data.image;
+        this.loginForm.key = res.data.key
+      })
+    },
     changeLoginStatus(status) {
       this.$emit('changeLoginStatus', status)
     },
@@ -235,6 +257,14 @@ export default {
       .to-register-text {
         text-align: right;
       }
+
+      .captcha {
+        .el-image {
+          cursor: pointer;
+        }
+      }
+
+
     }
 
     .register-panel {

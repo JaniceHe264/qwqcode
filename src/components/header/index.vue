@@ -56,7 +56,7 @@
         </el-col>
         <el-col :span="4">
           <div class="right">
-            <el-popover v-if="true"
+            <el-popover v-if="false"
                         placement="bottom"
                         :width="150"
                         trigger="click"

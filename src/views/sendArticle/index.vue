@@ -12,7 +12,7 @@
           </div>
         </el-col>
         <el-col>
-          <MdEditor v-model="value" class="markdown"/>
+          <MdEditor v-model="value" class="markdown"></MdEditor>
         </el-col>
       </el-row>
       <el-row>

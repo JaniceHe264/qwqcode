@@ -3,5 +3,5 @@
  * 项目配置
  * */
 module.exports = {
-  baseApi: 'https://ug.baidu.com'
+  baseApi: 'http://localhost:8087'
 }
