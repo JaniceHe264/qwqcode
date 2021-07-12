@@ -11,12 +11,27 @@ export function captcha() {
   })
 }
 
-export function login() {
+export function login(data) {
   return request({
     url: '/login',
-    method: 'POST',
+    method: "POST",
     headers: {
-      contentType: 'application/x-www-form-urlencoded'
-    }
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    },
+    data,
+    transformRequest: [function (data) {
+      let ret = ''
+      for (let it in data) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      }
+      return ret.substring(0, ret.length - 1)
+    }],
+  })
+}
+
+export function logout() {
+  return request({
+    url: '/logout',
+    method: 'GET'
   })
 }

@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="login">
     <div class="panel">
@@ -24,21 +25,20 @@
           </div>
         </template>
         <div class="login-panel" v-if="loginType=='login'">
-          <el-form ref="loginForm" :model="loginForm">
+          <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" placeholder="用户名">
+              <el-input v-model.trim="loginForm.username" placeholder="用户名">
 
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input v-model="loginForm.password" placeholder="密码">
-
+              <el-input v-model.trim="loginForm.password" show-password placeholder="密码">
               </el-input>
             </el-form-item>
-            <el-form-item prop="authCode">
+            <el-form-item prop="code">
               <el-row :gutter="20">
                 <el-col :span="18">
-                  <el-input v-model="loginForm.authCode" placeholder="验证码">
+                  <el-input v-model.trim="loginForm.code" placeholder="验证码">
                   </el-input>
                 </el-col>
                 <el-col :span="6">
@@ -54,7 +54,7 @@
             <el-form-item>
               <el-row>
                 <el-col>
-                  <el-button color="#17a788" type="primary" plain @click="subLogin">确认登录</el-button>
+                  <el-button color="#17a788" type="primary" plain @click="subLogin('loginForm')">确认登录</el-button>
                 </el-col>
                 <el-col>
                   <el-row>
@@ -123,6 +123,7 @@
 import {Cellphone} from '@element-plus/icons-vue'
 
 import {captcha, login} from '@/api/auth'
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "Login",
@@ -134,6 +135,23 @@ export default {
         password: '',
         code: '',
         key: ''
+      },
+      loginRules: {
+        username: [{
+          required: true, message: '请输入用户名', trigger: 'blur'
+        }, {
+          max: 30, message: '最多示输入30个字符', trigger: 'blur'
+        }],
+        password: [{
+          required: true, message: '请输入密码', trigger: 'blur'
+        }, {
+          max: 30, message: '最多输入30个字符', trigger: 'blur'
+        }],
+        code: [{
+          required: true, message: '请输入验证码', trigger: 'blur'
+        }, {
+          max: 4, message: '验证码最多为4个字符', trigger: 'blur'
+        }]
       },
       registerForm: {
         username: '',
@@ -155,14 +173,38 @@ export default {
     }
   },
   created() {
-    // console.log(this.loginType)
     this.getCaptcha()
   },
+  computed: {
+    ...mapGetters(['getToken']),
+  },
   methods: {
-    subLogin() {
-      login().then(res => {
-        console.log(res);
+    ...mapActions(['setToken', 'setUser']),
+    subLogin(formName) {
+      this.$refs[formName].validate(val => {
+        if (val) {
+          login(this.loginForm).then(res => {
+            if (res.code == 200) {
+              this.$notify({
+                title: '提示',
+                message: '登录成功',
+                type: 'success'
+              })
+              const token = res.data;
+              this.setToken(token);
+              // console.log(this.getToken)
+              this.handClose();
+            } else {
+              this.$notify({
+                title: '提示',
+                message: res.message,
+                type: 'error'
+              })
+            }
+          })
+        }
       })
+
     },
     getCaptcha() {
       captcha().then(res => {
@@ -174,7 +216,7 @@ export default {
     changeLoginStatus(status) {
       this.$emit('changeLoginStatus', status)
     },
-    handClose(done) {
+    handClose() {
       // 将子组件的状态发送给父组件 让父组件修改
       this.$emit("dialogClosed", true)
     }

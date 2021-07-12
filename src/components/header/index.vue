@@ -56,7 +56,7 @@
         </el-col>
         <el-col :span="4">
           <div class="right">
-            <el-popover v-if="false"
+            <el-popover v-if="getToken"
                         placement="bottom"
                         :width="150"
                         trigger="click"
@@ -81,7 +81,7 @@
                     </el-col>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false"><i class="iconfont icon-exit"></i>退出</el-link>
+                        <el-link :underline="false" @click="logout"><i class="iconfont icon-exit"></i>退出</el-link>
                       </div>
                     </el-col>
                   </el-row>
@@ -110,6 +110,7 @@
 import {Search} from '@element-plus/icons-vue'
 import Login from "@/components/base/Login";
 import SendQuestion from "@/components/base/SendQuestion";
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: "Header",
@@ -128,9 +129,16 @@ export default {
     Login,
     Search
   },
+  computed: {
+    ...mapGetters(['getToken', 'getUser'])
+  },
   created() {
   },
   methods: {
+    ...mapActions(['clearInfo']),
+    logout() {
+      this.clearInfo()
+    },
     openSendQuestion() {
       this.showSendQuestion = true
     },

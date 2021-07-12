@@ -5,9 +5,17 @@
 
 import axios from 'axios'
 import {baseApi} from '@/config'
+import Cookie from "js-cookie";
 
 const request = axios.create({
   baseURL: baseApi,
+})
+
+request.interceptors.request.use(config => {
+  if (Cookie.get("token")) {
+    config.headers['Authorization'] = Cookie.get("token")
+  }
+  return config;
 })
 
 request.interceptors.response.use(res => {
