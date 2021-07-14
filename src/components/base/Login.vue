@@ -76,14 +76,14 @@
           </el-form>
         </div>
         <div class="register-panel" v-if="loginType=='register'">
-          <el-form ref="registerForm" :model="registerForm">
+          <el-form ref="registerForm" :model="registerForm" :rules="registerRules">
             <el-form-item prop="username">
               <el-input placeholder="用户名" v-model="registerForm.username"></el-input>
             </el-form-item>
             <el-form-item prop="phone">
               <el-input placeholder="手机号" v-model="registerForm.phone">
                 <template #append>
-                  <el-button type="primary">
+                  <el-button type="primary" @click="sendCode('registerForm')">
                     <el-icon>
                       <Cellphone/>
                     </el-icon>
@@ -92,19 +92,21 @@
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="authCode">
-              <el-input placeholder="验证码" v-model="registerForm.authCode"></el-input>
+            <el-form-item prop="code">
+              <el-input placeholder="验证码" v-model="registerForm.code"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input placeholder="密码" v-model="registerForm.password"></el-input>
+              <el-input placeholder="密码" show-password v-model="registerForm.password"></el-input>
             </el-form-item>
-            <el-form-item prop="repassword">
-              <el-input placeholder="确认密码" v-model="registerForm.repassword"></el-input>
+            <el-form-item prop="rpassword">
+              <el-input placeholder="确认密码" show-password v-model="registerForm.rpassword"></el-input>
             </el-form-item>
             <el-form-item>
               <el-row>
                 <el-col>
-                  <el-button class="reg-btn" type="primary" plain color="#17a788">立即注册</el-button>
+                  <el-button class="reg-btn" type="primary" plain color="#17a788" @click="subRegister('registerForm')">
+                    立即注册
+                  </el-button>
                 </el-col>
                 <el-col>
                   <span>已有账号？去登录</span>
@@ -122,12 +124,19 @@
 
 import {Cellphone} from '@element-plus/icons-vue'
 
-import {captcha, login} from '@/api/auth'
+import {captcha, login, sendCode, register} from '@/api/auth'
 import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "Login",
   data() {
+    const checkRpassword = (rule, value, callback) => {
+      if (value.trim() !== this.registerForm.password) {
+        callback(new Error("两次密码不一致"))
+      }
+      callback()
+    }
+
     return {
       captchaUrl: '',
       loginForm: {
@@ -156,9 +165,38 @@ export default {
       registerForm: {
         username: '',
         phone: '',
-        authCode: '',
+        code: '',
         password: '',
-        repassword: ''
+        rpassword: ''
+      },
+      registerRules: {
+        username: [{
+          required: true, message: '请输入用户名', trigger: 'blur'
+        }, {
+          max: 30, message: '最多示输入30个字符', trigger: 'blur'
+        }],
+        phone: [{
+          required: true, message: '请输入手机号', trigger: 'blur'
+        }, {
+          pattern: /^1[3-9][\d]{9}$/, message: '请输入正确的手机号', trigger: 'blur'
+        }],
+        code: [{
+          required: true, message: '请输入验证码', trigger: 'blur'
+        }, {
+          max: 4, message: '验证码最多为4个字符', trigger: 'blur'
+        }],
+        password: [{
+          required: true, message: '请输入密码', trigger: 'blur'
+        }, {
+          max: 30, message: '最多输入30个字符', trigger: 'blur'
+        }],
+        rpassword: [{
+          required: true, message: '请输入密码', trigger: 'blur'
+        }, {
+          max: 30, message: '最多输入30个字符', trigger: 'blur'
+        }, {
+          validator: checkRpassword, trigger: 'blur'
+        }],
       }
     }
   },
@@ -180,6 +218,56 @@ export default {
   },
   methods: {
     ...mapActions(['setToken', 'setUser']),
+    subRegister(formName) {
+      this.$refs[formName].validate(val => {
+        if (val) {
+          register(this.registerForm).then(res => {
+            if (res.code == 200) {
+              this.$notify({
+                title: "提示",
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs[formName].resetFields()
+              this.changeLoginStatus('login')
+            } else {
+              this.$notify({
+                title: "提示",
+                message: res.message,
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
+    },
+    sendCode(formName) {
+      this.$refs[formName].validateField('username', userErr => {
+        if (!userErr) {
+          this.$refs[formName].validateField('phone', phoneErr => {
+            if (!phoneErr) {
+              sendCode(this.registerForm).then(res => {
+                if (res.code == 200) {
+                  if (!phoneErr) {
+                    this.$notify({
+                      title: "提示",
+                      message: res.message,
+                      type: 'success'
+                    })
+                  } else {
+                    this.$notify({
+                      title: "提示",
+                      message: res.message,
+                      type: 'error'
+                    })
+                  }
+                }
+              })
+            }
+          })
+        }
+      })
+    },
     subLogin(formName) {
       this.$refs[formName].validate(val => {
         if (val) {
@@ -190,8 +278,10 @@ export default {
                 message: '登录成功',
                 type: 'success'
               })
-              const token = res.data;
+              const token = res.data.token;
+              const user = res.data.user;
               this.setToken(token);
+              this.setUser(user);
               // console.log(this.getToken)
               this.handClose();
             } else {
@@ -207,11 +297,13 @@ export default {
 
     },
     getCaptcha() {
-      captcha().then(res => {
-        console.log(res);
-        this.captchaUrl = res.data.image;
-        this.loginForm.key = res.data.key
-      })
+      if (!this.getToken) {
+        captcha().then(res => {
+          console.log(res);
+          this.captchaUrl = res.data.image;
+          this.loginForm.key = res.data.key
+        })
+      }
     },
     changeLoginStatus(status) {
       this.$emit('changeLoginStatus', status)
@@ -219,6 +311,11 @@ export default {
     handClose() {
       // 将子组件的状态发送给父组件 让父组件修改
       this.$emit("dialogClosed", true)
+    }
+  },
+  watch: {
+    getToken(newVal, oldVal) {
+      this.getCaptcha()
     }
   },
   components: {

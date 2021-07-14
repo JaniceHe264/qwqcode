@@ -19,7 +19,7 @@ const mutations = {
   },
   [setUser](state, user) {
     state.user = user;
-    Cookie.set("user", user, {expires: 7})
+    Cookie.set("user", JSON.stringify(state.user), {expires: 7})
   },
   [clearInfo](state) {
     state.token = '';

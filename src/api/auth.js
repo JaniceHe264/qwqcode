@@ -4,6 +4,34 @@
  */
 import request from '@/utils/request'
 
+/**
+ * 注册
+ * @param data
+ */
+export function register(data) {
+  return request({
+    url: '/auth/register',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 发送数字验证码
+ * @param data
+ */
+export function sendCode(data) {
+  return request({
+    url: '/auth/send-code',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 获取图片验证码
+ * @returns {AxiosPromise}
+ */
 export function captcha() {
   return request({
     url: '/auth/captcha',
@@ -11,6 +39,11 @@ export function captcha() {
   })
 }
 
+/**
+ * 登录
+ * @param data
+ * @returns {AxiosPromise}
+ */
 export function login(data) {
   return request({
     url: '/login',
@@ -29,6 +62,10 @@ export function login(data) {
   })
 }
 
+/**
+ * 退出登录
+ * @returns {AxiosPromise}
+ */
 export function logout() {
   return request({
     url: '/logout',
