@@ -3,5 +3,6 @@
  * 项目配置
  * */
 module.exports = {
-  baseApi: 'http://localhost:8087'
+  baseApi: 'http://localhost:8087',
+  uploadUrl: "/file/upload"
 }

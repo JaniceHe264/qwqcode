@@ -17,6 +17,9 @@ request.interceptors.request.use(config => {
   if (Cookie.get("token")) {
     config.headers['Authorization'] = Cookie.get("token")
   }
+  if (config.url.indexOf('/file/upload') != -1) {
+    config.headers['Content-Type'] = 'multipart/form-data';
+  }
   return config;
 })
 

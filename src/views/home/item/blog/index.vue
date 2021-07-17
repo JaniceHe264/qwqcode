@@ -49,9 +49,9 @@
                   <span class="iconfont icon-comment"></span>
                   <span>1888条评论</span>
                 </div>
-<!--                <div class="send-comment">-->
-<!--                  <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" @closed="closeSendComment"/>-->
-<!--                </div>-->
+                <!--                <div class="send-comment">-->
+                <!--                  <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" @closed="closeSendComment"/>-->
+                <!--                </div>-->
               </el-col>
               <el-col :span="3">
                 <div class="collect" @click="blogLove = !blogLove">

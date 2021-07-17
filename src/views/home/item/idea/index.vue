@@ -103,6 +103,12 @@ export default {
       ideaLove: false,
     }
   },
+  props: {
+    ideaInfo: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
     goDetail(id, type) {
       this.$router.push({

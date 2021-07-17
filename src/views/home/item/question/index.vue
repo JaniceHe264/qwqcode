@@ -113,6 +113,12 @@ export default {
       questionAttention: false,
     }
   },
+  props: {
+    questionInfo: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
 
     goDetail(id, type) {

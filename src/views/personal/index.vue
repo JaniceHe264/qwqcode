@@ -63,7 +63,7 @@
 
 <script>
 import QuestionItem from "@/views/home/item/question/index";
-import BlogItem from "@/views/home/item/blog/index";
+import BlogItem from "@/views/home/item/index";
 import IdeaItem from "@/views/home/item/idea/index";
 import Answer from "@/views/personal/answer/index";
 import WritePanel from "@/components/base/WritePanel";

@@ -3,27 +3,27 @@
     <div class="panel">
       <el-row>
         <el-col>
-          <div class="article-title " :class="type">
-            <el-input size="large" placeholder="请输入文章标题">
+          <div class="article-title " :class="articleForm.type">
+            <el-input size="large" v-model.trim="articleForm.title" placeholder="请输入文章标题">
               <template #prepend>
-                <el-button type="primary" color="#26bfbf">{{ type == 'blog' ? '博客' : '想法' }}标题</el-button>
+                <el-button type="primary" color="#26bfbf">{{ articleForm.type == 'blog' ? '博客' : '想法' }}标题</el-button>
               </template>
             </el-input>
           </div>
         </el-col>
         <el-col>
-          <MdEditor v-model="value" class="markdown"></MdEditor>
+          <MdEditor v-model="articleForm.content" class="markdown" @onUploadImg="uploadImg"></MdEditor>
         </el-col>
       </el-row>
       <el-row>
         <el-col>
-          <div class="btn-group" :class="type">
+          <div class="btn-group" :class="articleForm.type">
             <el-row :gutter="20">
-              <el-col :span="type == 'blog' ? 12 : 24">
+              <el-col :span="articleForm.type == 'blog' ? 12 : 24">
                 <el-row>
                   <el-col>
                     <el-select
-                      v-model="selectTagList"
+                      v-model="articleForm.labels"
                       multiple
                       filterable
                       allow-create
@@ -34,27 +34,34 @@
                     >
                       <el-option
                         v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        :key="item.id"
+                        :label="item.labelName"
+                        :value="item.labelName"
                       >
                       </el-option>
                     </el-select>
                   </el-col>
                   <el-col>
                     <div class="send-btn">
-                      <el-button type="primary" :color="type == 'blog' ? '#26bfbf' : '#f4c807'">保存文章</el-button>
+                      <el-button type="primary" :color="articleForm.type == 'blog' ? '#26bfbf' : '#f4c807'"
+                                 @click="subArticle">保存文章
+                      </el-button>
                     </div>
                   </el-col>
                 </el-row>
               </el-col>
-              <el-col :span="12" v-if="type == 'blog'">
+              <el-col :span="12" v-if="articleForm.type == 'blog'">
                 <el-upload
-                  v-if="!firstImageUrl"
+                  v-if="!articleForm.firstUrl"
                   :show-file-list="false"
                   class="upload-demo"
                   drag
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :multiple="false"
+                  method="POST"
+                  name="file"
+                  :on-success="onUploadImgSuccess"
+                  :action="uploadApi"
+                  :headers="uploadHeaders"
                 >
                   <el-icon class="el-icon--upload">
                     <upload-filled/>
@@ -73,14 +80,15 @@
                   placement="top"
                   center
                   :width="80"
+                  :limit="1"
                   popper-class="upload-popover"
                   trigger="hover"
                 >
                   <div class="upload-again">
-                    <el-button type="primary" size="mini" color="#26bfbf">重新上传？</el-button>
+                    <el-button type="primary" size="mini" color="#26bfbf" @click="uploadAgain">重新上传？</el-button>
                   </div>
                   <template #reference>
-                    <el-image :src="firstImageUrl"></el-image>
+                    <el-image :src="articleForm.firstUrl"></el-image>
                   </template>
                 </el-popover>
 
@@ -97,57 +105,117 @@
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {UploadFilled} from '@element-plus/icons-vue'
+import {uploadImg} from "@/api/file";
+import {uploadUrl, baseApi} from '@/config'
+import {mapGetters} from 'vuex'
+import {getLabelList} from "@/api/label";
+import {saveArticle} from "@/api/article";
+import {checkLogin} from "@/utils/utils";
 
 export default {
   name: "SendArticle",
   data() {
     return {
+      uploadApi: baseApi + uploadUrl,
+      articleForm: {
+        id: '',
+        title: '',
+        content: '',
+        labels: [],
+        type: 'blog',
+        firstUrl: ''
+      },
       firstImageUrl: '',
       selectTagList: [],
-      options: [
-        {
-          value: 'HTML',
-          label: 'HTML',
-        },
-        {
-          value: 'CSS',
-          label: 'CSS',
-        },
-        {
-          value: 'JavaScript',
-          label: 'JavaScript',
-        },
-      ],
+      options: [],
       sanitize: '',
-      type: '博客',
-      value: `# 一级标题
-
-\`你好\`
-哈哈
-_d_
-
-> fsdaf aspduf
-
-\`\`\`java
-import java.util.Scanner;
-
-public static void main(String[] args){
-  Scanner sc = new Scanner(System.in);
-  System.out.println(sc.nextInt() + sc.nextInt())
-}
-\`\`\`
-
-## 二级标题
-
-1. 你好
-2. 哈哈哈
-3. helloworld`
+      value: ""
     }
   },
   created() {
-    this.type = this.$route.query.type
+    if (!checkLogin()) {
+      this.$notify({
+        title: '提示',
+        message: '请先登录',
+        type: 'error',
+      })
+      this.$router.go(-1);
+      return;
+    }
+    this.articleForm.type = this.$route.query.type
+    this.getLabelOptions()
   },
-  methods: {},
+  computed: {
+    ...mapGetters(['getToken']),
+    uploadHeaders() {
+      return {
+        Authorization: this.getToken
+      }
+    }
+  },
+  methods: {
+    subArticle() {
+      if(this.articleForm.title.trim() == ''){
+        return this.$notify({
+          title: '提示',
+          message: '请输入文章标题',
+          type: 'error'
+        })
+      }
+      if(this.articleForm.labels.length == 0){
+        return this.$notify({
+          title: '提示',
+          message: '请至少选择一个标签，没有也可以自己创建哦',
+          type: 'error'
+        })
+      }
+      this.articleForm.tags = this.articleForm.labels.join(',')
+      saveArticle(this.articleForm).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+        }
+      })
+    },
+    getLabelOptions() {
+      if (this.getToken) {
+        getLabelList().then(res => {
+          console.log(res);
+          if (res.code == 200) {
+            this.options = res.data;
+          }
+        })
+      }
+    },
+    uploadAgain() {
+      this.articleForm.firstUrl = ''
+    },
+    onUploadImgSuccess(res, file, fileList) {
+      if (res.code == 200) {
+        this.articleForm.firstUrl = res.data.url
+      }
+    },
+    async uploadImg(fileList, callback) {
+      const result = await Promise.all(
+        Array.from(fileList).map(file => {
+          console.log(file);
+          return new Promise((rev, rej) => {
+            const form = new FormData()
+            form.append("file", file)
+            uploadImg(form).then(res => {
+              rev(res)
+            }).catch(err => {
+              rej(err)
+            })
+          })
+        })
+      )
+      callback(result.map(item => item.data.url))
+    }
+  },
   components: {MdEditor, UploadFilled}
 }
 </script>

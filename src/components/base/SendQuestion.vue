@@ -101,6 +101,13 @@ export default {
     saveQuestion() {
       if (this.getToken) {
         const subForm = JSON.parse(JSON.stringify(this.questionForm));
+        if(subForm.tags.length == 0){
+          return this.$notify({
+            title: '提示',
+            message: '请至少选择一个标签，没有也可以自己创建哦',
+            type: 'error'
+          })
+        }
         subForm.tags = subForm.tags.join(',')
         saveArticle(subForm).then(res => {
           console.log(res)

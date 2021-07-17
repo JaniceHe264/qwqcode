@@ -35,14 +35,21 @@
                 </el-col>
               </el-row>
             </div>
-            <div class="body">
+            <div class="body" v-infinite-scroll="loadMore">
               <el-row>
-                <el-col v-for="(item , index) in articleList" :key="index">
-                  <QuestionItem v-if="item.type == 'question'"/>
-                  <IdeaItem v-if="item.type == 'idea'"/>
-                  <BlogItem v-if="item.type == 'blog'" :has-first-pic="item.hasFirstPic"/>
+                <el-col v-for="(item , index) in articleList" :key="item.id">
+                  <!--                  <QuestionItem v-if="item.type == 'question'" :question-info="item"/>-->
+                  <!--                  <IdeaItem v-if="item.type == 'idea'" :idea-info="item"/>-->
+                  <ArticleItem
+                    :theme-color="item.type == 'blog' ? '#26bfbf' : item.type == 'idea' ? '#f4c807' : '#0066ff'"
+                    :article-info="item" :has-first-pic="item.firstUrl != '' && item.firstUrl != null"/>
                 </el-col>
               </el-row>
+              <div class="footer">
+                <div>
+                  <span class="info-text">{{ infoText }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </el-col>
@@ -53,17 +60,17 @@
 
 <script>
 import {Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled} from '@element-plus/icons-vue'
-import QuestionItem from './item/question'
-import IdeaItem from './item/idea'
-import BlogItem from './item/blog'
+import ArticleItem from './item/index'
 import HotTopic from '@/components/base/HotTopic'
 import WritePanel from '@/components/base/WritePanel'
 import NavPanel from "@/components/base/NavPanel";
+import {getHomeArticleList} from "@/api/article";
 
 export default {
   name: "Home",
   data() {
     return {
+      infoText: '玩命加载中...',
       navData: [
         {
           name: '推荐'
@@ -78,30 +85,46 @@ export default {
           name: '我发布的'
         },
       ],
-      articleList: [
-        {
-          type: 'blog',
-          hasFirstPic: false
-        },
-        {
-          type: 'blog',
-          hasFirstPic: true
-        },
-        {
-          type: 'question'
-        },
-        {
-          type: 'idea'
-        }
-      ],
+      articleList: [],
       circleUrl:
         require('@/assets/image/me.jpg'),
       squareUrl:
         require('@/assets/image/shy.png'),
-      curActive: 1
+      curActive: 1,
+      page: {
+        current: 1,
+        size: 5,
+        total: 0,
+        pages: 1
+      }
     }
   },
+  created() {
+    this.getArticleList()
+  },
   methods: {
+    loadMore() {
+      this.page.current++;
+      if (this.page.current > this.page.pages) {
+        return;
+      }
+      this.getArticleList();
+    },
+    getArticleList() {
+      getHomeArticleList(this.page).then(res => {
+        if (res.code == 200) {
+          this.page.current = res.data.current;
+          this.page.size = res.data.size;
+          this.page.total = res.data.total;
+          this.page.pages = res.data.pages;
+          this.articleList.push(...res.data.records);
+          if (this.page.current == this.page.pages) {
+            this.infoText = '没有更多了哦~'
+          }
+          console.log(this.articleList)
+        }
+      })
+    },
     goDetail(id, type) {
       this.$router.push({
         path: '/detail',
@@ -117,7 +140,7 @@ export default {
     }
   },
   components: {
-    NavPanel, QuestionItem, IdeaItem, BlogItem, HotTopic, WritePanel,
+    NavPanel, ArticleItem, HotTopic, WritePanel,
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled
   }
 }
@@ -198,7 +221,21 @@ export default {
 
       .body {
         padding: 20px 45px;
+
+        .footer {
+          div {
+            margin-top: 20px;
+            text-align: center;
+
+            .info-text {
+              color: $info-color;
+              font-size: 18px;
+            }
+          }
+        }
       }
+
+
     }
   }
 }
