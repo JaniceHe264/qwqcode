@@ -60,11 +60,12 @@
                   <el-row>
                     <el-col :span="12">
                       <div class="forget-text">
-                        <span>忘记密码？</span>
+<!--                        <span>忘记密码？</span>-->
+                        <span> </span>
                       </div>
                     </el-col>
                     <el-col :span="12">
-                      <div class="to-register-text">
+                      <div class="to-register-text" @click="changeLoginStatus('register')">
                         <span>没有账号，去注册?</span>
                       </div>
                     </el-col>
@@ -109,7 +110,7 @@
                   </el-button>
                 </el-col>
                 <el-col>
-                  <span>已有账号？去登录</span>
+                  <span @click="changeLoginStatus('login')">已有账号？去登录</span>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -230,12 +231,6 @@ export default {
               })
               this.$refs[formName].resetFields()
               this.changeLoginStatus('login')
-            } else {
-              this.$notify({
-                title: "提示",
-                message: res.message,
-                type: 'error'
-              })
             }
           })
         }
@@ -253,12 +248,6 @@ export default {
                       title: "提示",
                       message: res.message,
                       type: 'success'
-                    })
-                  } else {
-                    this.$notify({
-                      title: "提示",
-                      message: res.message,
-                      type: 'error'
                     })
                   }
                 }
@@ -284,12 +273,6 @@ export default {
               this.setUser(user);
               // console.log(this.getToken)
               this.handClose();
-            } else {
-              this.$notify({
-                title: '提示',
-                message: res.message,
-                type: 'error'
-              })
             }
           })
         }

@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="20">
             <div class="textarea-panel">
-              <el-input type="textarea" :rows="5" :maxlength="70" :show-word-limit="true" v-model="ideaContent"
+              <el-input type="textarea" :rows="5" :maxlength="70" :show-word-limit="true" v-model="questionForm.title"
                         placeholder="写下你的问题，准确地描述问题更容易得到解答哦" clearable resize="none"></el-input>
             </div>
           </el-col>
@@ -23,7 +23,7 @@
             <el-row>
               <el-col>
                 <el-select
-                  v-model="value"
+                  v-model="questionForm.tags"
                   multiple
                   filterable
                   allow-create
@@ -34,17 +34,17 @@
                 >
                   <el-option
                     v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    :key="item.id"
+                    :label="item.labelName"
+                    :value="item.labelName"
                   >
                   </el-option>
                 </el-select>
               </el-col>
               <el-col>
                 <div class="send-btn">
-                  <el-checkbox v-model="anonymity" label="匿名提问" size="large"></el-checkbox>
-                  <el-button type="primary" size="large">提出问题</el-button>
+                  <el-checkbox v-model="questionForm.anonymity" label="匿名提问" size="large"></el-checkbox>
+                  <el-button type="primary" size="large" @click="saveQuestion">提出问题</el-button>
                 </div>
               </el-col>
             </el-row>
@@ -56,32 +56,29 @@
 </template>
 
 <script>
+
+import {getLabelList} from "@/api/label";
+import {saveArticle} from "@/api/article";
+import {mapGetters} from 'vuex'
+
 export default {
   name: "SendQuestion",
   data() {
     return {
       meUrl: require('@/assets/image/me.jpg'),
-      anonymity: false,
-      ideaContent: '',
-      value: [],
-      options: [
-        {
-          value: 'HTML',
-          label: 'HTML',
-        },
-        {
-          value: 'CSS',
-          label: 'CSS',
-        },
-        {
-          value: 'JavaScript',
-          label: 'JavaScript',
-        }]
+      questionForm: {
+        type: 'question',
+        title: '',
+        tags: [],
+        anonymity: false
+      },
+      options: []
     }
   },
   computed: {
+    ...mapGetters(['getToken']),
     hasContent() {
-      return this.ideaContent.length > 0
+      return this.questionForm.title.length > 0
     }
   },
   props: {
@@ -90,7 +87,50 @@ export default {
       default: false
     }
   },
+  created() {
+    this.getLabelOptions();
+  },
+  watch: {
+    dialogVisible(newVal, oldVal) {
+      if (newVal) {
+        this.getLabelOptions()
+      }
+    }
+  },
   methods: {
+    saveQuestion() {
+      if (this.getToken) {
+        const subForm = JSON.parse(JSON.stringify(this.questionForm));
+        subForm.tags = subForm.tags.join(',')
+        saveArticle(subForm).then(res => {
+          console.log(res)
+          if (res.code == 200) {
+            this.$notify({
+              title: '提示',
+              message: res.message,
+              type: 'success'
+            })
+            this.questionForm = {
+              type: 'question',
+              title: '',
+              tags: [],
+              anonymity: false
+            }
+            this.handleClose()
+          }
+        })
+      }
+    },
+    getLabelOptions() {
+      if (this.getToken) {
+        getLabelList().then(res => {
+          console.log(res);
+          if (res.code == 200) {
+            this.options = res.data;
+          }
+        })
+      }
+    },
     handleClose() {
       this.$emit('closed', true);
     }

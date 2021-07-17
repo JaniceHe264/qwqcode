@@ -7,6 +7,8 @@ import axios from 'axios'
 import {baseApi} from '@/config'
 import Cookie from "js-cookie";
 
+import {ElNotification} from 'element-plus'
+
 const request = axios.create({
   baseURL: baseApi,
 })
@@ -19,8 +21,20 @@ request.interceptors.request.use(config => {
 })
 
 request.interceptors.response.use(res => {
-  const result = res.data;
-  return Promise.resolve(result)
-})
+    const result = res.data;
+    if (res.data.code != 200) {
+      ElNotification({
+        title: '提示',
+        message: res.data.message,
+        type: 'error'
+      })
+      return Promise.reject(result || 'error')
+    }
+    return Promise.resolve(result)
+  },
+  error => {
+    console.log('err' + error) // for debug
+    return Promise.reject(error);
+  })
 
 export default request

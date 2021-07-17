@@ -84,6 +84,7 @@
 <script>
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
 import SendQuestion from "@/components/base/SendQuestion";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "WritePanel",
@@ -94,11 +95,21 @@ export default {
       showSendQuestion: false
     }
   },
+  computed: {
+    ...mapGetters(['getToken'])
+  },
   methods: {
     closeSendQuestion(closed) {
       this.showSendQuestion = !closed;
     },
     openSendQuestion() {
+      if (!this.getToken) {
+        return this.$notify({
+          title: '提示',
+          message: '请先登录吧',
+          type: 'error'
+        })
+      }
       this.showSendQuestion = true;
     },
     goto(route) {
