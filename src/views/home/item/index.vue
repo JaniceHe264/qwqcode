@@ -313,7 +313,7 @@ export default {
         path: '/detail',
         name: 'Detail',
         query: {
-          id: 1,
+          id: id,
           type: type
         }
       })

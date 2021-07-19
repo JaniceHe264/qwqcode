@@ -24,9 +24,14 @@ import globalComponent from '@/components'
 import Cookie from 'js-cookie'
 //======引入js-cookie工具包结束======
 
+//======引入Storage工具包开始======
+import Storage from '@/utils/storageUtils'
+//======引入Storage工具包结束======
+
 const app = createApp(App);
 
 app.config.globalProperties.$jscookie = Cookie
+app.config.globalProperties.$storage = Storage
 
 app.use(store)
   .use(router)

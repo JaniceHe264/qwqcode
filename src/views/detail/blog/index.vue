@@ -3,19 +3,15 @@
     <div class="panel">
       <el-row>
         <el-col :span="18">
-          <div class="blog-panel">
+          <div class="blog-panel" v-loading="loading">
             <div class="blog-content">
-              <h3>我是博客的标题</h3>
-              <p>我是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
-              <p>我是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
-              <p>我是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
-              <p>我是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
-              <p>我是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
-              <p>我是博客的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字</p>
+              <h3>{{ blogInfo.title }}</h3>
+              <MdEditor v-model="blogInfo.content" class="markdown" previewOnly></MdEditor>
             </div>
             <div class="tag-panel">
-              <el-tag type="info" size="large" effect="dark" color="#26bfbf" v-for="(item,index) in 6" :key="index">
-                tag{{ index }}
+              <el-tag type="info" size="large" effect="dark" color="#26bfbf" v-for="(item,index) in blogInfo.labelList"
+                      :key="item.id">
+                {{ item.labelName }}
               </el-tag>
             </div>
             <div class="author-info">
@@ -23,8 +19,10 @@
                 <div class="left">
                   <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
                   <div>
-                    <div>
-                      <span class="user-name">孙峻</span><br>
+                    <div v-if="blogInfo.user">
+                      <span class="user-name">{{
+                          blogInfo.user.nickname ? blogInfo.user.nickname : blogInfo.user.username
+                        }}</span><br>
                       <span class="idea-num">希望我一切顺利</span>
                     </div>
                     <div>
@@ -46,22 +44,23 @@
                     <el-button color="#26bfbf" plain size="large">
                       厉害&nbsp;
                       <i class="iconfont icon-good"></i>
-                      188
+                      {{ blogInfo.praiseNum }}
                     </el-button>
                   </div>
                 </el-col>
                 <el-col :span="3">
                   <div class="comment" @click="sendComment">
                     <span class="iconfont icon-comment"></span>
-                    <span>1888条评论</span>
+                    <span>{{ blogInfo.commentNum }}条评论</span>
                   </div>
                   <div class="send-comment">
-                    <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" :theme-color="'#26bfbf'" @closed="closeSendComment"/>
+                    <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" :theme-color="'#26bfbf'"
+                                 @closed="closeSendComment"/>
                   </div>
                 </el-col>
                 <el-col :span="2">
-                  <div class="collect" @click="blogLove = !blogLove">
-                    <div v-if="blogLove">
+                  <div class="collect" @click="blogInfo.isCollect = !blogInfo.isCollect">
+                    <div v-if="blogInfo.isCollect">
                       <span class="iconfont icon-collect"></span>
                       <span>收藏博客</span>
                     </div>
@@ -98,14 +97,14 @@
                     <el-icon :size="25">
                       <AlarmClock/>
                     </el-icon>
-                    <span>2022-02-04 12:39</span>
+                    <span>{{ blogInfo.updateTime }}</span>
                   </div>
                 </el-col>
                 <el-col :span="8">
                   <div class="browse-info">
-                    <span>该博客被1923人点赞</span>
+                    <span>该博客被{{ blogInfo.praiseNum }}人点赞</span>
                     <span class="vertical">|</span>
-                    <span>3984人浏览</span>
+                    <span>{{ blogInfo.browse }}人浏览</span>
                   </div>
                 </el-col>
               </el-row>
@@ -148,11 +147,15 @@
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
 import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
+import MdEditor from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
+import {getArticleDetail} from "@/api/article";
 
 export default {
   name: "Blog",
   data() {
     return {
+      loading: false,
       meUrl:
         require('@/assets/image/me.jpg'),
       blogLove: false,
@@ -163,10 +166,22 @@ export default {
       showSendComment: false
     }
   },
+  created() {
+    this.getBlogInfo();
+  },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor
   },
   methods: {
+    getBlogInfo() {
+      this.loading = true;
+      getArticleDetail(this.$route.query.id).then(res => {
+        if (res.code == 200) {
+          this.blogInfo = res.data;
+        }
+        this.loading = false;
+      })
+    },
     closeSendComment(closed) {
       this.showSendComment = !closed;
     },
@@ -191,8 +206,11 @@ export default {
       .blog-content {
         border: 1px solid var(--el-border-color-base);
         border-radius: 5px;
-        text-align: center;
-        padding: 10px 0;
+        padding: 10px 20px;
+
+        h3 {
+          text-align: center;
+        }
       }
 
       .tag-panel {

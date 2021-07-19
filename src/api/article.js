@@ -5,6 +5,16 @@
 import request from "@/utils/request";
 
 /**
+ * 获取文章详情
+ */
+export function getArticleDetail(id){
+  return request({
+    url: `/article/detail/${id}`,
+    method: "GET"
+  })
+}
+
+/**
  * 获取首页文章列表
  */
 export function getHomeArticleList(page) {
