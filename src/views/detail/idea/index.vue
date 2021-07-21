@@ -1,6 +1,6 @@
 <template>
   <div class="idea">
-    <div class="panel">
+    <div class="panel" v-loading="loading">
       <el-row>
         <el-col :span="18">
           <div>
@@ -10,8 +10,10 @@
                   <div class="left">
                     <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
                     <div>
-                      <div>
-                        <span class="user-name">孙峻</span>
+                      <div v-if="ideaInfo.user">
+                        <span class="user-name">{{
+                            ideaInfo.user.nickname ? ideaInfo.user.nickname : ideaInfo.user.username
+                          }}</span>
                         <span class="idea-num">共有189个想法</span>
                       </div>
                       <div>
@@ -27,9 +29,9 @@
                 </el-col>
                 <el-col :span="12">
                   <div class="right">
-                    <span>该想法被1923人认可</span>
+                    <span>该想法被{{ ideaInfo.praiseNum }}人认可</span>
                     <span class="vertical">|</span>
-                    <span>3984人浏览</span>
+                    <span>{{ ideaInfo.browse }}人浏览</span>
                   </div>
                 </el-col>
               </el-row>
@@ -37,28 +39,29 @@
             </div>
             <div class="idea-content">
               <div class="tag-panel">
-                <el-tag type="warning" v-for="(item,index) in 6" :key="index">tag {{ index }}</el-tag>
+                <el-tag type="warning" v-for="(item,index) in ideaInfo.labelList" :key="index">{{
+                    item.labelName
+                  }}
+                </el-tag>
               </div>
               <div>
-                <p>
-                  我觉得我可以有一百个女朋友测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
-                </p>
+                <MdEditor v-model="ideaInfo.content" class="markdown" previewOnly></MdEditor>
               </div>
               <div class="btn-group">
                 <el-row>
                   <el-col :span="3">
                     <div class="attention">
-                      <el-button type="warning" plain size="large">
+                      <el-button type="warning" plain size="large" @click="giveALike">
                         赞同&nbsp;
                         <i class="iconfont icon-good"></i>
-                        188
+                        {{ ideaInfo.praiseNum }}
                       </el-button>
                     </div>
                   </el-col>
                   <el-col :span="3">
                     <div class="comment" @click="sendComment">
                       <span class="iconfont icon-comment"></span>
-                      <span>1888条评论</span>
+                      <span>{{ ideaInfo.commentNum }}条评论</span>
                     </div>
                     <div class="send-comment">
                       <SendComment :dialog-visible="showSendComment" :article-info="ideaInfo"
@@ -66,8 +69,8 @@
                     </div>
                   </el-col>
                   <el-col :span="2">
-                    <div class="collect" @click="ideaLove = !ideaLove">
-                      <div v-if="ideaLove">
+                    <div class="collect" @click="ideaInfo.isCollect = !ideaInfo.isCollect">
+                      <div v-if="ideaInfo.isCollect">
                         <span class="iconfont icon-collect"></span>
                         <span>收藏博客</span>
                       </div>
@@ -104,7 +107,7 @@
                       <el-icon :size="25">
                         <AlarmClock/>
                       </el-icon>
-                      <span>2022-02-04 12:39</span>
+                      <span>{{ ideaInfo.updateTime }}</span>
                     </div>
                   </el-col>
                 </el-row>
@@ -149,6 +152,10 @@
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
 import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
+import {getArticleDetail} from "@/api/article";
+import MdEditor from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
+import {addPraise} from "@/api/praise";
 
 export default {
   name: "Idea",
@@ -161,10 +168,39 @@ export default {
       ideaInfo: {
         title: '我是想法标题',
         content: '我是想法内容'
-      }
+      },
+      loading: false
     }
   },
+  created() {
+    this.getIdeaInfo();
+  },
   methods: {
+    giveALike() {
+      addPraise({
+        "giveType": 'article',
+        "praiseType": 1,
+        "typeId": this.ideaInfo.id
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+        }
+        this.getIdeaInfo();
+      })
+    },
+    getIdeaInfo() {
+      this.loading = true;
+      getArticleDetail(this.$route.query.id).then(res => {
+        if (res.code == 200) {
+          this.ideaInfo = res.data;
+        }
+        this.loading = false;
+      })
+    },
     closeSendComment(closed) {
       this.showSendComment = !closed;
     },
@@ -173,7 +209,7 @@ export default {
     },
   },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor
   }
 }
 </script>

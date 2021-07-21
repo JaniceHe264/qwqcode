@@ -26,11 +26,15 @@
                       <span class="idea-num">希望我一切顺利</span>
                     </div>
                     <div>
-                      <el-button color="#26bfbf" size="large" plain>
-                        <el-icon>
+                      <el-button color="#26bfbf" size="large" plain
+                                 @click="collect({typeId: blogInfo.user.id , type: 'author'})">
+                        <el-icon v-if="blogInfo.userIsAttention">
+                          <Check/>
+                        </el-icon>
+                        <el-icon v-else>
                           <Plus/>
                         </el-icon>
-                        <span>关注</span>
+                        <span><span v-show="blogInfo.userIsAttention">已</span>关注</span>
                       </el-button>
                     </div>
                   </div>
@@ -41,7 +45,7 @@
               <el-row>
                 <el-col :span="3">
                   <div class="attention">
-                    <el-button color="#26bfbf" plain size="large">
+                    <el-button color="#26bfbf" plain size="large" @click="giveALike">
                       厉害&nbsp;
                       <i class="iconfont icon-good"></i>
                       {{ blogInfo.praiseNum }}
@@ -58,9 +62,9 @@
                                  @closed="closeSendComment"/>
                   </div>
                 </el-col>
-                <el-col :span="2">
-                  <div class="collect" @click="blogInfo.isCollect = !blogInfo.isCollect">
-                    <div v-if="blogInfo.isCollect">
+                <el-col :span="3">
+                  <div class="collect" @click="collect({typeId: blogInfo.id , type: 'article'})">
+                    <div v-if="!blogInfo.isCollect">
                       <span class="iconfont icon-collect"></span>
                       <span>收藏博客</span>
                     </div>
@@ -144,12 +148,14 @@
 </template>
 
 <script>
-import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
+import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled, Check} from "@element-plus/icons-vue";
 import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {getArticleDetail} from "@/api/article";
+import {addPraise} from "@/api/praise";
+import {addCollect} from "@/api/collect";
 
 export default {
   name: "Blog",
@@ -170,9 +176,37 @@ export default {
     this.getBlogInfo();
   },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   },
   methods: {
+    collect(data) {
+      addCollect(data).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+          this.getBlogInfo()
+        }
+      })
+    },
+    giveALike() {
+      addPraise({
+        "giveType": 'article',
+        "praiseType": 1,
+        "typeId": this.blogInfo.id
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+        }
+        this.getBlogInfo()
+      })
+    },
     getBlogInfo() {
       this.loading = true;
       getArticleDetail(this.$route.query.id).then(res => {
