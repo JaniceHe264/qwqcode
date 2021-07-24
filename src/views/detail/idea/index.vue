@@ -14,14 +14,18 @@
                         <span class="user-name">{{
                             ideaInfo.user.nickname ? ideaInfo.user.nickname : ideaInfo.user.username
                           }}</span>
-                        <span class="idea-num">共有189个想法</span>
+                        <span class="idea-num">共有{{ ideaInfo.user.ideaNum }}个想法</span>
                       </div>
                       <div>
-                        <el-button type="warning" circle plain>
-                          <el-icon>
+                        <el-button type="warning" circle plain
+                                   @click="collect({typeId: ideaInfo.user.id , type: 'author'})">
+                          <el-icon v-if="ideaInfo.userIsAttention">
+                            <Check/>
+                          </el-icon>
+                          <el-icon v-else>
                             <Plus/>
                           </el-icon>
-                          <span>关注</span>
+                          <span><span v-show="ideaInfo.userIsAttention">已</span>关注</span>
                         </el-button>
                       </div>
                     </div>
@@ -68,8 +72,8 @@
                                    @closed="closeSendComment" theme-color="#ff9607"/>
                     </div>
                   </el-col>
-                  <el-col :span="2">
-                    <div class="collect" @click="ideaInfo.isCollect = !ideaInfo.isCollect">
+                  <el-col :span="3">
+                    <div class="collect" @click="collect({typeId: ideaInfo.id , type: 'article'})">
                       <div v-if="ideaInfo.isCollect">
                         <span class="iconfont icon-collect"></span>
                         <span>收藏博客</span>
@@ -149,13 +153,14 @@
 </template>
 
 <script>
-import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled} from "@element-plus/icons-vue";
+import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled, Check} from "@element-plus/icons-vue";
 import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
-import {getArticleDetail} from "@/api/article";
+import {addBrowse, getArticleDetail} from "@/api/article";
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {addPraise} from "@/api/praise";
+import {addCollect} from "@/api/collect";
 
 export default {
   name: "Idea",
@@ -173,9 +178,27 @@ export default {
     }
   },
   created() {
-    this.getIdeaInfo();
+    this.addBrowseNum();
   },
   methods: {
+    addBrowseNum() {
+      addBrowse(this.$route.query.id).then(res => {
+        this.getIdeaInfo()
+        console.log("添加浏览次数成功")
+      })
+    },
+    collect(data) {
+      addCollect(data).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+          this.getIdeaInfo()
+        }
+      })
+    },
     giveALike() {
       addPraise({
         "giveType": 'article',
@@ -209,7 +232,7 @@ export default {
     },
   },
   components: {
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   }
 }
 </script>

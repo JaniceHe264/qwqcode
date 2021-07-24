@@ -5,6 +5,16 @@
 import request from "@/utils/request";
 
 /**
+ * 添加浏览次数
+ */
+export function addBrowse(articleId){
+  return request({
+    url: `/article/add/browse/${articleId}`,
+    method: 'PUT'
+  })
+}
+
+/**
  * 获取文章详情
  */
 export function getArticleDetail(id){

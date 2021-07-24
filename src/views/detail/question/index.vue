@@ -1,67 +1,77 @@
 <template>
   <div class="detail">
-    <div class="panel">
+    <div class="panel" v-loading="loading">
       <div class="question">
         <div class="question-content-panel">
           <div class="question-content">
             <div class="left">
               <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
               <div>
-                <div>
-                  <span class="user-name">孙峻</span>
-                  <span class="idea-num">共提出了189个问题</span>
+                <div v-if="questionInfo.user">
+                  <span
+                    class="user-name">{{
+                      questionInfo.user.nickname ? questionInfo.user.nickname : questionInfo.user.username
+                    }}</span>
+                  <span class="idea-num">共提出了{{ questionInfo.user.questionNum }}个问题</span>
                 </div>
                 <div>
-                  <el-button type="primary" circle plain>
-                    <el-icon>
+                  <el-button type="primary" circle plain
+                             @click="collect({typeId: questionInfo.user.id , type: 'author'})">
+                    <el-icon v-if="questionInfo.userIsAttention">
+                      <Check/>
+                    </el-icon>
+                    <el-icon v-else>
                       <Plus/>
                     </el-icon>
-                    <span>关注</span>
+                    <span><span v-show="questionInfo.userIsAttention">已</span>关注</span>
                   </el-button>
                 </div>
               </div>
             </div>
-            <h2>我是一个问题的标题</h2>
+            <h2>{{ questionInfo.title }}</h2>
             <div class="tag-panel">
               <el-tag
-                v-for="(item,index) in 6"
-                :key="index"
+                v-for="(item,index) in questionInfo.labelList"
+                :key="item.id"
                 effect="dark"
                 size="large"
               >
-                tag{{ item }}
+                {{ item.labelName }}
               </el-tag>
             </div>
             <div class="content">
-              <p>
-                我是一个问题的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文
-                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文
-                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文
-                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
-              </p>
+              <!--              <p>-->
+              <!--                我是一个问题的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文-->
+              <!--                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文-->
+              <!--                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文-->
+              <!--                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字-->
+              <!--              </p>-->
             </div>
             <div class="btn-group">
-              <el-row>
-                <el-col :span="5">
-                  <el-row :gutter="8">
+              <el-row :gutter="questionInfo.isCollect ? 0 : 30">
+                <el-col :span="questionInfo.isCollect ? 5 : 4">
+                  <el-row :gutter="questionInfo.isCollect ? 0 : 30">
                     <el-col :span="12">
                       <el-button type="primary" size="large" plain>
                         <i class="iconfont icon-answer"></i>&nbsp;替他解答
                       </el-button>
                     </el-col>
                     <el-col :span="12">
-                      <el-button type="primary" size="large" plain @click="questionAttention = !questionAttention">
-                        <div v-if="questionAttention">
-                          <el-icon :size="19">
-                            <CirclePlus/>
-                          </el-icon>
-                          关注问题
-                        </div>
-                        <div v-else>
-                          <i class="iconfont icon-attention"></i>&nbsp;
-                          已关注问题
-                        </div>
-                      </el-button>
+                      <div class="attention-btn">
+                        <el-button type="primary" size="large" plain
+                                   @click="collect({typeId: questionInfo.id , type: 'article'})">
+                          <div v-if="!questionInfo.isCollect">
+                            <el-icon :size="19">
+                              <CirclePlus/>
+                            </el-icon>
+                            关注问题
+                          </div>
+                          <div v-else>
+                            <i class="iconfont icon-attention"></i>&nbsp;
+                            已关注问题
+                          </div>
+                        </el-button>
+                      </div>
                     </el-col>
                   </el-row>
                 </el-col>
@@ -69,14 +79,14 @@
                   <div class="attention">
                     <el-button type="primary" plain size="large">
                       <i class="iconfont icon-good"></i>
-                      188
+                      {{ questionInfo.praiseNum }}
                     </el-button>
                   </div>
                 </el-col>
                 <el-col :span="3">
                   <div class="comment" @click="sendComment">
                     <span class="iconfont icon-comment"></span>
-                    <span>1888条评论</span>
+                    <span>{{ questionInfo.commentNum }}条评论</span>
                   </div>
                   <div class="send-comment">
                     <SendComment :dialog-visible="showSendComment" :article-info="questionInfo"
@@ -105,25 +115,18 @@
                     </div>
                   </el-popover>
                 </el-col>
-                <el-col :span="3">
+                <el-col :span="4">
                   <div class="article-info">
                     <el-icon :size="25">
                       <AlarmClock/>
                     </el-icon>
-                    <span>2022-02-04 12:39</span>
-                  </div>
-                </el-col>
-                <el-col :span="2">
-                  <div class="author-info">
-                    <el-icon :size="25">
-                      <UserFilled/>
-                    </el-icon>
-                    <span>孙峻</span>
+                    <span>{{ questionInfo.updateTime }}</span>
                   </div>
                 </el-col>
                 <el-col :span="6">
                   <div class="article-browse-info">
-                    <span>已有18888人关注该问题</span><span class="vertical">|</span><span>被浏览20000次</span>
+                    <span>已有{{ questionInfo.collectNum }}人关注该问题</span><span
+                    class="vertical">|</span><span>被浏览{{ questionInfo.browse }}次</span>
                   </div>
                 </el-col>
               </el-row>
@@ -183,9 +186,12 @@
 </template>
 
 <script>
-import {Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled} from '@element-plus/icons-vue'
+import {Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Check} from '@element-plus/icons-vue'
 import SendComment from "@/components/base/SendComment";
 import Comment from "@/views/detail/comment/index";
+import {addCollect} from "@/api/collect";
+import {addPraise} from "@/api/praise";
+import {getArticleDetail, addBrowse} from "@/api/article";
 
 export default {
   name: "index",
@@ -201,12 +207,57 @@ export default {
       questionInfo: {
         title: '我是问题标题',
         content: '我是问题内容'
-      }
+      },
+      loading: false
     }
   },
   created() {
+    this.addBrowseNum();
   },
   methods: {
+    addBrowseNum() {
+      addBrowse(this.$route.query.id).then(res => {
+        this.getQuestionInfo()
+        console.log("添加浏览次数成功")
+      })
+    },
+    collect(data) {
+      addCollect(data).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+          this.getQuestionInfo()
+        }
+      })
+    },
+    giveALike() {
+      addPraise({
+        "giveType": 'article',
+        "praiseType": 1,
+        "typeId": this.ideaInfo.id
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+        }
+        this.getQuestionInfo();
+      })
+    },
+    getQuestionInfo() {
+      this.loading = true;
+      getArticleDetail(this.$route.query.id).then(res => {
+        if (res.code == 200) {
+          this.questionInfo = res.data;
+        }
+        this.loading = false;
+      })
+    },
     closeSendComment(closed) {
       this.showSendComment = !closed;
     },
@@ -217,7 +268,7 @@ export default {
   },
   components: {
     Comment,
-    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, SendComment
+    Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, SendComment, Check
   }
 }
 </script>
@@ -307,6 +358,10 @@ export default {
                 display: inline-block;
                 padding: 5px;
               }
+            }
+
+            .attention-btn {
+              text-align: center;
             }
           }
         }

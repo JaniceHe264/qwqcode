@@ -153,7 +153,7 @@ import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-import {getArticleDetail} from "@/api/article";
+import {getArticleDetail, addBrowse} from "@/api/article";
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
 
@@ -173,12 +173,18 @@ export default {
     }
   },
   created() {
-    this.getBlogInfo();
+    this.addBrowseNum();
   },
   components: {
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   },
   methods: {
+    addBrowseNum() {
+      addBrowse(this.$route.query.id).then(res => {
+        this.getBlogInfo()
+        console.log("添加浏览次数成功")
+      })
+    },
     collect(data) {
       addCollect(data).then(res => {
         if (res.code == 200) {
