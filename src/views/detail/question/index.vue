@@ -77,7 +77,7 @@
                 </el-col>
                 <el-col :span="2">
                   <div class="attention">
-                    <el-button type="primary" plain size="large">
+                    <el-button type="primary" plain size="large" @click="giveALike">
                       <i class="iconfont icon-good"></i>
                       {{ questionInfo.praiseNum }}
                     </el-button>
@@ -126,7 +126,7 @@
                 <el-col :span="6">
                   <div class="article-browse-info">
                     <span>已有{{ questionInfo.collectNum }}人关注该问题</span><span
-                    class="vertical">|</span><span>被浏览{{ questionInfo.browse }}次</span>
+                    class="vertical">|</span><span>被浏览{{ browseNum }}次</span>
                   </div>
                 </el-col>
               </el-row>
@@ -192,6 +192,7 @@ import Comment from "@/views/detail/comment/index";
 import {addCollect} from "@/api/collect";
 import {addPraise} from "@/api/praise";
 import {getArticleDetail, addBrowse} from "@/api/article";
+import {addFootprint} from "@/api/footprint";
 
 export default {
   name: "index",
@@ -208,17 +209,25 @@ export default {
         title: '我是问题标题',
         content: '我是问题内容'
       },
-      loading: false
+      loading: false,
+      browseNum: 0
     }
   },
   created() {
     this.addBrowseNum();
   },
   methods: {
+    addVisited() {
+      addFootprint({articleId: this.$route.query.id}).then(res => {
+        console.log(res.message)
+      })
+    },
     addBrowseNum() {
       addBrowse(this.$route.query.id).then(res => {
         this.getQuestionInfo()
         console.log("添加浏览次数成功")
+        this.browseNum = res.data
+        this.addVisited();
       })
     },
     collect(data) {
@@ -237,7 +246,7 @@ export default {
       addPraise({
         "giveType": 'article',
         "praiseType": 1,
-        "typeId": this.ideaInfo.id
+        "typeId": this.questionInfo.id
       }).then(res => {
         if (res.code == 200) {
           this.$notify({

@@ -77,7 +77,7 @@
         </el-icon>
       </el-button>
     </div>
-    <SendQuestion :dialog-visible="showSendQuestion" @closed="closeSendQuestion"/>
+    <SendQuestion :dialog-visible="showSendQuestion" @closed="closeSendQuestion" @saveQuestion="getSaveFlag"/>
   </div>
 </template>
 
@@ -99,6 +99,11 @@ export default {
     ...mapGetters(['getToken'])
   },
   methods: {
+    getSaveFlag(flag) {
+      if (flag) {
+        this.$emit("saveQuestionSuccess", true)
+      }
+    },
     closeSendQuestion(closed) {
       this.showSendQuestion = !closed;
     },

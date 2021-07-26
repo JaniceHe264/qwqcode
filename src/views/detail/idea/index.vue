@@ -35,7 +35,7 @@
                   <div class="right">
                     <span>该想法被{{ ideaInfo.praiseNum }}人认可</span>
                     <span class="vertical">|</span>
-                    <span>{{ ideaInfo.browse }}人浏览</span>
+                    <span>{{ browseNum }}次浏览</span>
                   </div>
                 </el-col>
               </el-row>
@@ -74,9 +74,9 @@
                   </el-col>
                   <el-col :span="3">
                     <div class="collect" @click="collect({typeId: ideaInfo.id , type: 'article'})">
-                      <div v-if="ideaInfo.isCollect">
+                      <div v-if="!ideaInfo.isCollect">
                         <span class="iconfont icon-collect"></span>
-                        <span>收藏博客</span>
+                        <span>收藏想法</span>
                       </div>
                       <div v-else>
                         <span class="iconfont icon-love"></span>&nbsp;
@@ -161,6 +161,7 @@ import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
+import {addFootprint} from "@/api/footprint";
 
 export default {
   name: "Idea",
@@ -174,17 +175,25 @@ export default {
         title: '我是想法标题',
         content: '我是想法内容'
       },
-      loading: false
+      loading: false,
+      browseNum: 0
     }
   },
   created() {
     this.addBrowseNum();
   },
   methods: {
+    addVisited() {
+      addFootprint({articleId: this.$route.query.id}).then(res => {
+        console.log(res.message)
+      })
+    },
     addBrowseNum() {
       addBrowse(this.$route.query.id).then(res => {
         this.getIdeaInfo()
         console.log("添加浏览次数成功")
+        this.browseNum = res.data;
+        this.addVisited()
       })
     },
     collect(data) {

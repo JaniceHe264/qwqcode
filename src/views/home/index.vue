@@ -14,7 +14,7 @@
               </div>
             </div>
             <div class="write">
-              <WritePanel/>
+              <WritePanel @saveQuestionSuccess="reLoadArticleList"/>
             </div>
             <div class="hot-topic">
               <HotTopic/>
@@ -103,6 +103,14 @@ export default {
     this.getArticleList()
   },
   methods: {
+    reLoadArticleList(flag) {
+      console.log(flag)
+      if (flag) {
+        this.page.current = 1;
+        this.articleList = [];
+        this.getArticleList()
+      }
+    },
     loadMore() {
       this.page.current++;
       if (this.page.current > this.page.pages) {

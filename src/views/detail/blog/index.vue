@@ -108,7 +108,7 @@
                   <div class="browse-info">
                     <span>该博客被{{ blogInfo.praiseNum }}人点赞</span>
                     <span class="vertical">|</span>
-                    <span>{{ blogInfo.browse }}人浏览</span>
+                    <span>{{ browseNum }}次浏览</span>
                   </div>
                 </el-col>
               </el-row>
@@ -123,7 +123,7 @@
                 <h3>作者的其他博客</h3>
                 <el-divider></el-divider>
                 <span v-for="(item,index) in 5" :key="index">
-                    <el-link class="blog-link" type="warning">我是作者的另一个想法</el-link>
+                    <el-link class="blog-link" type="success">我是作者的另一个想法</el-link>
                     <el-link type="info">{{ index + 1 }}人赞同</el-link>
                     <el-divider></el-divider>
                   </span>
@@ -134,7 +134,7 @@
                 <h3>相关博客</h3>
                 <el-divider></el-divider>
                 <span v-for="(item,index) in 5" :key="index">
-                    <el-link class="blog-link" type="warning">我是一个与该想法类似的想法</el-link>
+                    <el-link class="blog-link" type="success">我是一个与该想法类似的想法</el-link>
                     <el-link type="info">{{ index + 1 }}人赞同</el-link>
                     <el-divider></el-divider>
                   </span>
@@ -156,6 +156,7 @@ import 'md-editor-v3/lib/style.css';
 import {getArticleDetail, addBrowse} from "@/api/article";
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
+import {addFootprint} from "@/api/footprint";
 
 export default {
   name: "Blog",
@@ -169,7 +170,8 @@ export default {
         title: '我是博客标题',
         content: '我是博客内容'
       },
-      showSendComment: false
+      showSendComment: false,
+      browseNum: 0
     }
   },
   created() {
@@ -179,10 +181,17 @@ export default {
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   },
   methods: {
+    addVisited() {
+      addFootprint({articleId: this.$route.query.id}).then(res => {
+        console.log(res.message)
+      })
+    },
     addBrowseNum() {
       addBrowse(this.$route.query.id).then(res => {
         this.getBlogInfo()
         console.log("添加浏览次数成功")
+        this.browseNum = res.data
+        this.addVisited()
       })
     },
     collect(data) {
@@ -339,7 +348,11 @@ export default {
       padding: 0 30px;
 
       .el-link.blog-link {
-        color: #26bfbf;
+        color: $nav-btn-blog-icon;
+
+        :hover {
+          color: $nav-btn-blog-icon !important;
+        }
       }
 
       .correlation {

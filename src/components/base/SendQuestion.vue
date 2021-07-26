@@ -101,7 +101,7 @@ export default {
     saveQuestion() {
       if (this.getToken) {
         const subForm = JSON.parse(JSON.stringify(this.questionForm));
-        if(subForm.tags.length == 0){
+        if (subForm.tags.length == 0) {
           return this.$notify({
             title: '提示',
             message: '请至少选择一个标签，没有也可以自己创建哦',
@@ -123,6 +123,7 @@ export default {
               tags: [],
               anonymity: false
             }
+            this.$emit("saveQuestion", true)
             this.handleClose()
           }
         })
