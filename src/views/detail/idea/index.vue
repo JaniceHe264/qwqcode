@@ -69,7 +69,8 @@
                     </div>
                     <div class="send-comment">
                       <SendComment :dialog-visible="showSendComment" :article-info="ideaInfo"
-                                   @closed="closeSendComment" theme-color="#ff9607"/>
+                                   @closed="closeSendComment" theme-color="#ff9607"
+                                   @commentSuccess="loadIdeaInfo"/>
                     </div>
                   </el-col>
                   <el-col :span="3">
@@ -171,10 +172,7 @@ export default {
         require('@/assets/image/me.jpg'),
       ideaLove: false,
       showSendComment: false,
-      ideaInfo: {
-        title: '我是想法标题',
-        content: '我是想法内容'
-      },
+      ideaInfo: {},
       loading: false,
       browseNum: 0
     }
@@ -183,6 +181,11 @@ export default {
     this.addBrowseNum();
   },
   methods: {
+    loadIdeaInfo(flag) {
+      if (flag) {
+        this.getIdeaInfo()
+      }
+    },
     addVisited() {
       addFootprint({articleId: this.$route.query.id}).then(res => {
         console.log(res.message)

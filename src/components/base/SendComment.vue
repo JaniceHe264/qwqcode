@@ -3,21 +3,22 @@
     <div class="panel">
       <el-dialog
         v-model="dialogVisible"
-        :is-reply="isReply"
-        :reply-comment="replyComment"
         width="30%"
         :lock-scroll="false"
         :before-close="handleClose"
       >
         <div class="info-panel">
           <h3>评论文章：{{ articleInfo.title }}</h3>
-          <span v-if="isReply">@{{ replyComment.authorInfo.username }}: {{ replyComment.commentContent }}</span>
+          <span v-if="isReply">@{{
+              replyComment.user.nickname ? replyComment.user.nickname : replyComment.user.username
+            }}: {{ replyComment.content }}</span>
         </div>
         <div class="input-panel">
-          <el-input type="textarea" resize="none" v-model="commentContent" placeholder="输入您评论的内容" :rows="3" show-word-limit
+          <el-input type="textarea" resize="none" v-model="commentContent" placeholder="输入您评论的内容" :rows="3"
+                    show-word-limit
                     maxlength="50"></el-input>
           <div class="send-btn">
-            <el-button type="primary" :color="themeColor">发布评论</el-button>
+            <el-button type="primary" :color="themeColor" @click="sendComment">发布评论</el-button>
           </div>
         </div>
       </el-dialog>
@@ -26,6 +27,9 @@
 </template>
 
 <script>
+
+import {addComment} from "@/api/comment";
+
 export default {
   name: "SendComment",
   data() {
@@ -70,8 +74,35 @@ export default {
   created() {
   },
   methods: {
+    sendComment() {
+      if (this.commentContent.trim() == '') {
+        return this.$notify({
+          title: '提示',
+          message: '请输入评论内容',
+          type: 'error'
+        })
+      }
+      addComment({
+        parentId: this.replyComment ? this.replyComment.id : 0,
+        articleId: this.articleInfo.id,
+        content: this.commentContent,
+        type: 'comment'
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: '评论成功',
+            type: 'success'
+          })
+          console.log(123)
+          this.$emit("commentSuccess", true)
+          this.handleClose()
+        }
+      })
+    },
     handleClose() {
       this.$emit('closed', true)
+      this.commentContent = '';
     }
   }
 }

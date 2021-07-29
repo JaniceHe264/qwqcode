@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="panel" v-loading="loading">
-      <div class="question">
+      <div class="question" v-infinite-scroll="loadMore">
         <div class="question-content-panel">
           <div class="question-content">
             <div class="left">
@@ -52,7 +52,7 @@
                 <el-col :span="questionInfo.isCollect ? 5 : 4">
                   <el-row :gutter="questionInfo.isCollect ? 0 : 30">
                     <el-col :span="12">
-                      <el-button type="primary" size="large" plain>
+                      <el-button type="primary" size="large" plain @click="answerQuestion">
                         <i class="iconfont icon-answer"></i>&nbsp;替他解答
                       </el-button>
                     </el-col>
@@ -90,7 +90,7 @@
                   </div>
                   <div class="send-comment">
                     <SendComment :dialog-visible="showSendComment" :article-info="questionInfo"
-                                 @closed="closeSendComment" theme-color="#0066ff"/>
+                                 @closed="closeSendComment" theme-color="#0066ff" @commentSuccess="loadQuestion"/>
                   </div>
                 </el-col>
                 <el-col :span="2">
@@ -138,28 +138,30 @@
           <el-row>
             <el-col :span="18">
               <el-tabs v-model="activeName">
-                <el-tab-pane label="23672个回答" name="answer">
-                  <div class="answer-content" v-for="(item , index) in 6" :key="index">
+                <el-tab-pane :label="page.total + '个回答'" name="answer">
+                  <div class="answer-content" v-for="(item , index) in answerList" :key="item.id">
                     <div class="author-info">
                       <el-avatar :src="squareUrl" shape="square" size="50"></el-avatar>
-                      <span class="user-name">孙峻</span>
-                      <span class="send-time">2022-02-24</span>
+                      <span class="user-name">{{ item.user.nickname ? item.user.nickname : item.user.username }}</span>
+                      <span class="send-time">{{ item.createTime }}</span>
                     </div>
                     <div class="answer-good-num">
-                      <span>有3000人觉得这个回答不错</span>
+                      <span>有{{ item.praiseNum }}人觉得这个回答不错</span>
                     </div>
                     <div class="answer-info">
-                      <p>我是回答这个问题的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
-                        字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试
-                        文字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字 字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文
-                        字字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试</p>
+                      <p>{{ item.content }}</p>
                     </div>
-                    <el-button type="primary" plain><span class="iconfont icon-good"></span>我觉得很不错</el-button>
+                    <el-button type="primary" plain @click="praiseComment(item)"><span
+                      class="iconfont icon-good"></span>我觉得很不错
+                    </el-button>
                     <el-divider></el-divider>
+                  </div>
+                  <div class="answer-footer">
+                    <span class="info-text">{{ infoText }}</span>
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="评论" name="second">
-                  <Comment theme-color="#0066ff" :article-info="questionInfo"/>
+                  <Comment theme-color="#409eff" :article-info="questionInfo"/>
                 </el-tab-pane>
               </el-tabs>
 
@@ -180,6 +182,24 @@
           </el-row>
         </div>
 
+        <div class="answer-question-panel">
+          <el-dialog
+            v-model="answerQuestionVisible"
+            :title="questionInfo.title"
+            width="45%"
+            :lock-scroll="false"
+          >
+            <el-input type="textarea" v-model="answerContent" size="large" :rows="5"
+                      placeholder="为他/她/它解答难题吧"></el-input>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="answerQuestionVisible = false">取消</el-button>
+                <el-button type="primary" @click="subAnswer"
+                >提交</el-button>
+              </span>
+            </template>
+          </el-dialog>
+        </div>
       </div>
     </div>
   </div>
@@ -193,11 +213,15 @@ import {addCollect} from "@/api/collect";
 import {addPraise} from "@/api/praise";
 import {getArticleDetail, addBrowse} from "@/api/article";
 import {addFootprint} from "@/api/footprint";
+import {getCommentList} from "@/api/comment";
+import {addComment} from "@/api/comment";
 
 export default {
   name: "index",
   data() {
     return {
+      answerContent: '',
+      answerQuestionVisible: false,
       activeName: 'answer',
       questionAttention: false,
       squareUrl:
@@ -205,18 +229,101 @@ export default {
       meUrl:
         require('@/assets/image/me.jpg'),
       showSendComment: false,
-      questionInfo: {
-        title: '我是问题标题',
-        content: '我是问题内容'
-      },
+      questionInfo: {},
       loading: false,
-      browseNum: 0
+      browseNum: 0,
+      page: {
+        current: 0,
+        size: 5,
+        pages: 0,
+        total: 0
+      },
+      answerList: [],
+      infoText: '玩命加载中...'
     }
   },
   created() {
     this.addBrowseNum();
   },
   methods: {
+    praiseComment(data) {
+      addPraise({
+        "giveType": 'answer',
+        "praiseType": 1,
+        "typeId": data.id
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+        }
+        if (res.message == '点赞成功')
+          data.praiseNum++;
+      })
+    },
+    subAnswer() {
+      if (this.answerContent.trim() == '') {
+        return this.$notify({
+          title: '提示',
+          message: '您还没有提出解决方案哦~',
+          type: 'warning'
+        })
+      }
+      addComment({
+        "articleId": this.questionInfo.id,
+        "content": this.answerContent,
+        "parentId": 0,
+        "type": "answer"
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: '已为您提出您的解答方案',
+            type: 'success'
+          })
+          this.page.current = 1;
+          this.answerList = []
+          this.getAnswerData()
+          this.answerQuestionVisible = false;
+          this.answerContent = '';
+        }
+      })
+    },
+    answerQuestion() {
+      this.answerQuestionVisible = true;
+    },
+    loadMore() {
+      this.page.current++;
+      if (this.page.current > this.page.pages) {
+        return;
+      }
+      this.getCommentData();
+    },
+    getAnswerData() {
+      getCommentList({
+        articleId: this.questionInfo.id,
+        current: this.page.current,
+        size: this.page.size,
+        type: 'answer'
+      }).then(res => {
+        if (res.code == 200) {
+          this.answerList.push(...res.data.records);
+          this.page.current = res.data.current;
+          this.page.size = res.data.size;
+          this.page.pages = res.data.pages;
+          this.page.total = res.data.total;
+          if (this.page.current >= this.page.pages) {
+            this.infoText = '没有更多了哦~'
+          }
+        }
+      })
+    },
+    loadQuestion(flag) {
+      if (flag)
+        this.getQuestionInfo();
+    },
     addVisited() {
       addFootprint({articleId: this.$route.query.id}).then(res => {
         console.log(res.message)
@@ -263,6 +370,7 @@ export default {
       getArticleDetail(this.$route.query.id).then(res => {
         if (res.code == 200) {
           this.questionInfo = res.data;
+          this.getAnswerData()
         }
         this.loading = false;
       })
@@ -388,6 +496,14 @@ export default {
           h3 {
             padding: 0;
             margin: 0;
+          }
+        }
+
+        .answer-footer {
+          text-align: center;
+
+          .info-text {
+            color: $info-color;
           }
         }
 

@@ -59,7 +59,8 @@
                   </div>
                   <div class="send-comment">
                     <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" :theme-color="'#26bfbf'"
-                                 @closed="closeSendComment"/>
+                                 @closed="closeSendComment"
+                                 @commentSuccess="loadBlogInfo"/>
                   </div>
                 </el-col>
                 <el-col :span="3">
@@ -166,10 +167,7 @@ export default {
       meUrl:
         require('@/assets/image/me.jpg'),
       blogLove: false,
-      blogInfo: {
-        title: '我是博客标题',
-        content: '我是博客内容'
-      },
+      blogInfo: {},
       showSendComment: false,
       browseNum: 0
     }
@@ -181,6 +179,11 @@ export default {
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   },
   methods: {
+    loadBlogInfo(flag) {
+      if (flag) {
+        this.getBlogInfo()
+      }
+    },
     addVisited() {
       addFootprint({articleId: this.$route.query.id}).then(res => {
         console.log(res.message)
