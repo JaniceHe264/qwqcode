@@ -1,7 +1,7 @@
 <template>
   <div class="personal">
     <div class="panel">
-      <div class="panel-header">
+      <div class="panel-header" v-infinite-scroll="loadMore">
         <div class="top" :style="{backgroundImage: backImg}">
           <el-button size="large" type="primary" plain color="#17a788">上传背景图片</el-button>
         </div>
@@ -33,18 +33,30 @@
       <div class="panel-bottom">
         <el-row :gutter="20">
           <el-col :span="18">
-            <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-              <el-tab-pane label="回答" :name="item.name" v-for="(item,index) in data" :key="index">
+            <el-tabs v-model="activeName" class="demo-tabs" :before-leave="changeTabHandle">
+              <el-tab-pane :name="item.value" v-for="(item,index) in userArticleNumGroup"
+                           :key="item.id">
                 <template #label>
-                  <span>{{ item.label }}({{ item.num }})</span>
+                  <span>{{ item.label }}({{ item.articleNum }})</span>
                 </template>
-                <template v-for="article in item.articleList" :key="article.id">
-                  <Answer v-if="article.type == 'answer'"/>
-                  <QuestionItem v-if="article.type == 'question'"/>
-                  <BlogItem v-if="article.type == 'blog'"/>
-                  <IdeaItem v-if="article.type == 'idea'"/>
+                <template v-for="article in showData.data" :key="article.id">
+                  <div v-if="showData.type == 'answer'">
+                    <Answer :answer-data="article"/>
+                  </div>
+                  <ArticleItem v-else
+                               :theme-color="article.type == 'blog' ? '#26bfbf' : article.type == 'idea' ? '#f4c807' : '#0066ff'"
+                               :article-info="article"
+                               :has-first-pic="article.firstUrl != '' && article.firstUrl != null"/>
+                </template>
+                <template v-if="!showData.data.length">
+                  <el-empty description="没有内容哦~"/>
                 </template>
               </el-tab-pane>
+              <div class="footer">
+                <div>
+                  <span class="info-text">{{ infoText }}</span>
+                </div>
+              </div>
             </el-tabs>
           </el-col>
           <el-col :span="6">
@@ -62,144 +74,87 @@
 </template>
 
 <script>
-import QuestionItem from "@/views/home/item/question/index";
-import BlogItem from "@/views/home/item/index";
-import IdeaItem from "@/views/home/item/idea/index";
 import Answer from "@/views/personal/answer/index";
 import WritePanel from "@/components/base/WritePanel";
 import NavPanel from "@/components/base/NavPanel";
 import HotTopic from "@/components/base/HotTopic";
+import ArticleItem from '@/views/home/item'
+
+import {getUserArticleNum} from "@/api/user";
+import {getFixArticleList} from "@/api/article";
 
 export default {
   name: "Personal",
-  components: {HotTopic, NavPanel, WritePanel, Answer, IdeaItem, BlogItem, QuestionItem,},
+  components: {HotTopic, NavPanel, WritePanel, Answer, ArticleItem},
   data() {
     return {
-      activeName: 'answer',
+      infoText: '玩命加载中...',
+      userArticleNumGroup: [],
+      activeName: 'answer-num',
       meUrl: require('@/assets/image/me.jpg'),
       backImg: `url(${require('@/assets/image/me.jpg')})`,
-      data: [
-        {
-          label: '回答',
-          name: 'answer',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'answer'
-            }, {
-              id: 2,
-              type: 'answer'
-            }, {
-              id: 3,
-              type: 'answer'
-            }
-          ]
-        },
-        {
-          label: '关注问题',
-          name: 'attentionQuestion',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'question'
-            }, {
-              id: 2,
-              type: 'question'
-            }, {
-              id: 3,
-              type: 'question'
-            }
-          ]
-        }, {
-          label: '提问',
-          name: 'question',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'question'
-            }, {
-              id: 2,
-              type: 'question'
-            }, {
-              id: 3,
-              type: 'question'
-            }
-          ]
-        }, {
-          label: '博客',
-          name: 'blog',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'blog'
-            }, {
-              id: 2,
-              type: 'blog'
-            }, {
-              id: 3,
-              type: 'blog'
-            }
-          ]
-        }, {
-          label: '想法',
-          name: 'idea',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'idea'
-            }, {
-              id: 2,
-              type: 'idea'
-            }, {
-              id: 3,
-              type: 'idea'
-            }
-          ]
-        }, {
-          label: '收藏',
-          name: 'collect',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'idea'
-            }, {
-              id: 2,
-              type: 'question'
-            }, {
-              id: 3,
-              type: 'blog'
-            }
-          ]
-        }, {
-          label: '浏览足迹',
-          name: 'footprint',
-          num: 6,
-          articleList: [
-            {
-              id: 1,
-              type: 'idea'
-            }, {
-              id: 2,
-              type: 'question'
-            }, {
-              id: 3,
-              type: 'blog'
-            }
-          ]
-        }
-      ]
+      page: {
+        current: 1,
+        size: 5,
+        total: 0,
+        pages: 1
+      },
+      showData: {
+        type: 'article',
+        data: []
+      }
     }
   },
   created() {
-
+    this.getArticleNumGroup()
   },
-  methods: {}
+  methods: {
+    loadMore() {
+      this.page.current++;
+      if (this.page.current > this.page.pages) {
+        return;
+      }
+      this.getShowData();
+    },
+    getShowData() {
+      getFixArticleList({
+        type: this.activeName,
+        current: this.page.current,
+        size: this.page.size
+      }).then(res => {
+        this.showData.type = this.activeName == 'answer_num' ? 'answer' : 'article';
+        this.showData.data.push(...res.data.records);
+        this.page.current = res.data.current;
+        this.page.size = res.data.size;
+        this.page.total = res.data.total;
+        this.page.pages = res.data.pages;
+        if (this.page.current >= this.page.pages) {
+          this.infoText = ''
+        }
+      })
+    },
+    changeTabHandle(activeName, oldName) {
+      console.log(123)
+      if (activeName != oldName) {
+        this.page.current = 1;
+        this.showData.data = [];
+      }
+      this.activeName = activeName;
+      this.getShowData();
+      return true;
+    },
+    getArticleNumGroup() {
+      getUserArticleNum().then(res => {
+        console.log(res);
+        if (res.code == 200) {
+          this.userArticleNumGroup = res.data;
+          if (res.data.length) {
+            this.activeName = res.data[0].value
+          }
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -301,6 +256,14 @@ export default {
       margin-top: 20px;
       min-height: 100px;
       padding: 20px;
+
+      .footer {
+        text-align: center;
+
+        .info-text {
+          color: $info-color;
+        }
+      }
 
       ::v-deep .el-tabs__item.is-active {
         color: $theme-color;

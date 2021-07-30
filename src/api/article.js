@@ -5,9 +5,22 @@
 import request from "@/utils/request";
 
 /**
+ * 获取指定类型的文章列表
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function getFixArticleList(params) {
+  return request({
+    url: '/article/fix/type',
+    method: 'GET',
+    params
+  })
+}
+
+/**
  * 添加浏览次数
  */
-export function addBrowse(articleId){
+export function addBrowse(articleId) {
   return request({
     url: `/article/add/browse/${articleId}`,
     method: 'PUT'
@@ -17,7 +30,7 @@ export function addBrowse(articleId){
 /**
  * 获取文章详情
  */
-export function getArticleDetail(id){
+export function getArticleDetail(id) {
   return request({
     url: `/article/detail/${id}`,
     method: "GET"

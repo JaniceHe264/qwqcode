@@ -2,18 +2,21 @@
   <div class="answer">
     <div class="panel">
       <div class="question">
-        <div class="avatar-info">
+        <div class="avatar-info" v-if="answerData">
           <el-avatar shape="square" :size="35" :src="meUrl">
           </el-avatar>
-          <span class="user-name">小明</span>
+          <span
+            class="user-name">{{
+              answerData.user.nickname ? answerData.user.nickname : answerData.user.username
+            }}</span>
         </div>
         <div class="question-title">
-          <h3>我是问题的标题</h3>
+          <h3>{{ answerData.article.title }}</h3>
         </div>
       </div>
       <div class="mine-answer">
         <p>我的回答：</p>
-        <p>我是问题的答案测试文字测试文字测试文字测试文字测试文字测试文字</p>
+        <p>{{ answerData.content }}</p>
       </div>
       <div class="answer-info">
         <el-link type="info" :underline="false">删除</el-link>
@@ -31,8 +34,14 @@ export default {
       meUrl: require('@/assets/image/me.jpg')
     }
   },
-  created() {
+  props: {
+    answerData: {
+      type: Object,
+      required: true
+    }
 
+  },
+  created() {
   },
   methods: {}
 }
