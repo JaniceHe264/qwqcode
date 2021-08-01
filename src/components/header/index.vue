@@ -138,6 +138,12 @@ export default {
     ...mapActions(['clearInfo']),
     logout() {
       this.clearInfo(true)
+      if (this.$route.meta.requireAuth) {
+        this.$router.push({
+          path: '/home',
+          name: 'Home'
+        })
+      }
     },
     openSendQuestion() {
       this.showSendQuestion = true

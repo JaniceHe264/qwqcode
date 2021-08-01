@@ -1,4 +1,6 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
+import {checkLogin} from "@/utils/utils";
+import {ElNotification} from "element-plus";
 
 const routes = [
   {
@@ -10,37 +12,58 @@ const routes = [
       {
         path: '/home',
         name: 'Home',
-        component: () => import('@/views/home')
+        component: () => import('@/views/home'),
+        meta: {
+          requireAuth: false
+        }
       },
       {
         path: '/detail',
         name: 'Detail',
-        component: () => import('@/views/detail')
+        component: () => import('@/views/detail'),
+        meta: {
+          requireAuth: false
+        }
       },
       {
         path: '/category',
         name: 'Category',
-        component: () => import('@/views/category')
+        component: () => import('@/views/category'),
+        meta: {
+          requireAuth: false
+        }
       },
       {
         path: '/tag',
         name: 'Tag',
-        component: () => import('@/views/tag')
+        component: () => import('@/views/tag'),
+        meta: {
+          requireAuth: false
+        }
       },
       {
         path: '/question',
         name: 'Question',
-        component: () => import('@/views/question')
+        component: () => import('@/views/question'),
+        meta: {
+          requireAuth: false
+        }
       },
       {
         path: '/personal',
         name: 'Personal',
-        component: () => import('@/views/personal')
+        component: () => import('@/views/personal'),
+        meta: {
+          requireAuth: true
+        }
       },
       {
         path: '/send-article',
         name: 'SendArticle',
-        component: () => import('@/views/sendArticle')
+        component: () => import('@/views/sendArticle'),
+        meta: {
+          requireAuth: false
+        }
       }
     ]
   }
@@ -49,6 +72,26 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    if (!checkLogin()) {
+      ElNotification({
+        type: 'error',
+        title: '提示',
+        message: '请先登录'
+      })
+      console.log(123)
+      next({
+        path: '/home',
+        name: 'Home'
+      })
+    }
+  }
+  console.log(to)
+  console.log(from)
+  next();
 })
 
 export default router
