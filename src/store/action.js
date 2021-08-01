@@ -13,13 +13,15 @@ const actions = {
   setUser({commit}, user) {
     commit(types.setUser, user)
   },
-  clearInfo({commit}) {
+  clearInfo({commit}, isHint) {
     logout().then(res => {
-      ElNotification({
-        type: 'success',
-        title: '提示',
-        message: res.message
-      })
+      if(isHint){
+        ElNotification({
+          type: 'success',
+          title: '提示',
+          message: res.message
+        })
+      }
       commit(types.clearInfo)
     })
   }

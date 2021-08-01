@@ -89,7 +89,7 @@
               </template>
 
               <template #reference>
-                <el-avatar class="avatar" :src="circleUrl" :size="45"></el-avatar>
+                <el-avatar class="avatar" :src="getUser.avatarUrl" :size="45"></el-avatar>
               </template>
             </el-popover>
             <div class="login-btn" v-else>
@@ -137,7 +137,7 @@ export default {
   methods: {
     ...mapActions(['clearInfo']),
     logout() {
-      this.clearInfo()
+      this.clearInfo(true)
     },
     openSendQuestion() {
       this.showSendQuestion = true

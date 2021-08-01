@@ -5,12 +5,14 @@
         <el-col :span="6">
           <div class="left">
             <div class="avatar">
-              <el-avatar :size="150" :src="circleUrl"></el-avatar>
+              <el-avatar :size="150" v-if="getToken" :src="getUser.avatarUrl"></el-avatar>
+              <el-avatar :size="150" v-else :src="circleUrl"></el-avatar>
               <div class="user">
-                <p>孙峻</p>
+                <p v-if="getToken">{{ getUser.nickname ? getUser.nickname : getUser.username }}</p>
+                <p v-else>还没有登录哦，去登陆吧...</p>
               </div>
               <div class="info">
-                <p>这个人很懒，什么都没留下...</p>
+                <p v-if="getToken">{{getUser.introduction ? getUser.introduction : '这个人很懒，什么都没留下...'}}</p>
               </div>
             </div>
             <div class="write">
@@ -65,6 +67,7 @@ import HotTopic from '@/components/base/HotTopic'
 import WritePanel from '@/components/base/WritePanel'
 import NavPanel from "@/components/base/NavPanel";
 import {getHomeArticleList} from "@/api/article";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "Home",
@@ -98,6 +101,9 @@ export default {
         pages: 1
       }
     }
+  },
+  computed: {
+    ...mapGetters(['getUser', 'getToken'])
   },
   created() {
     this.getArticleList()

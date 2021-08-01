@@ -60,7 +60,7 @@
                   <el-row>
                     <el-col :span="12">
                       <div class="forget-text">
-<!--                        <span>忘记密码？</span>-->
+                        <!--                        <span>忘记密码？</span>-->
                         <span> </span>
                       </div>
                     </el-col>
@@ -127,6 +127,7 @@ import {Cellphone} from '@element-plus/icons-vue'
 
 import {captcha, login, sendCode, register} from '@/api/auth'
 import {mapActions, mapGetters} from "vuex";
+import {dateFormat} from "@/utils/utils";
 
 export default {
   name: "Login",
@@ -267,6 +268,7 @@ export default {
                 message: '登录成功',
                 type: 'success'
               })
+              res.data.user.birthday = dateFormat(new Date(res.data.user.birthday), 'yyyy-MM-dd HH:mm:ss')
               const token = res.data.token;
               const user = res.data.user;
               this.setToken(token);
