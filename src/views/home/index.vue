@@ -9,10 +9,10 @@
               <el-avatar :size="150" v-else :src="circleUrl"></el-avatar>
               <div class="user">
                 <p v-if="getToken">{{ getUser.nickname ? getUser.nickname : getUser.username }}</p>
-                <p v-else>还没有登录哦，去登陆吧...</p>
+                <p v-else>还没有登录哦，去登录吧...</p>
               </div>
               <div class="info">
-                <p v-if="getToken">{{getUser.introduction ? getUser.introduction : '这个人很懒，什么都没留下...'}}</p>
+                <p v-if="getToken">{{ getUser.introduction ? getUser.introduction : '这个人很懒，什么都没留下...' }}</p>
               </div>
             </div>
             <div class="write">
@@ -30,9 +30,11 @@
           <div class="right">
             <div class="header">
               <el-row>
-                <el-col :span="6" v-for="(item , index) in navData" :key="index">
-                  <div class="nav-item" :class="{active: curActive == (index + 1)}" @click="changeNav(index + 1)">
-                    <span>{{ item.name }}</span>
+                <el-col :span="getToken ? 6 : 12" v-for="(item , index) in navData" :key="index">
+                  <div class="nav-item" v-if="getToken ? true : item.value != mine && item.value != attention"
+                       :class="{active: curActive == item.value}"
+                       @click="changeNav(item.value)">
+                    <span>{{ item.label }}</span>
                   </div>
                 </el-col>
               </el-row>
@@ -69,25 +71,18 @@ import NavPanel from "@/components/base/NavPanel";
 import {getHomeArticleList} from "@/api/article";
 import {mapGetters} from 'vuex'
 
+import {homeNav, attentionAuthorArticle, mineArticle} from '@/config'
+
+import {getDictDetailList} from "@/api/dict";
+
 export default {
   name: "Home",
   data() {
     return {
+      attention: attentionAuthorArticle,
+      mine: mineArticle,
       infoText: '玩命加载中...',
-      navData: [
-        {
-          name: '推荐'
-        },
-        {
-          name: '热榜'
-        },
-        {
-          name: '关注'
-        },
-        {
-          name: '我发布的'
-        },
-      ],
+      navData: [],
       articleList: [],
       circleUrl:
         require('@/assets/image/me.jpg'),
@@ -106,9 +101,25 @@ export default {
     ...mapGetters(['getUser', 'getToken'])
   },
   created() {
-    this.getArticleList()
+    this.getArticleNavData()
   },
   methods: {
+    changeNav(articleType) {
+      this.page.current = 1;
+      this.articleList = [];
+      this.curActive = articleType;
+      this.infoText = '玩命加载中...'
+      this.getArticleList(articleType)
+    },
+    getArticleNavData() {
+      getDictDetailList(homeNav).then(res => {
+        if (res.code == 200) {
+          this.navData = res.data;
+          this.curActive = this.navData[0].value
+          this.changeNav(this.curActive)
+        }
+      })
+    },
     reLoadArticleList(flag) {
       console.log(flag)
       if (flag) {
@@ -118,21 +129,21 @@ export default {
       }
     },
     loadMore() {
-      this.page.current++;
       if (this.page.current > this.page.pages) {
         return;
       }
-      this.getArticleList();
+      this.page.current++;
+      this.getArticleList(this.curActive);
     },
-    getArticleList() {
-      getHomeArticleList(this.page).then(res => {
+    getArticleList(type) {
+      getHomeArticleList(type, this.page).then(res => {
         if (res.code == 200) {
           this.page.current = res.data.current;
           this.page.size = res.data.size;
           this.page.total = res.data.total;
           this.page.pages = res.data.pages;
           this.articleList.push(...res.data.records);
-          if (this.page.current == this.page.pages) {
+          if (this.page.current > this.page.pages) {
             this.infoText = '没有更多了哦~'
           }
           console.log(this.articleList)
@@ -149,9 +160,6 @@ export default {
         }
       })
     },
-    changeNav(index) {
-      this.curActive = index;
-    }
   },
   components: {
     NavPanel, ArticleItem, HotTopic, WritePanel,

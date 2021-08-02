@@ -4,6 +4,7 @@
  */
 import request from "@/utils/request";
 
+
 /**
  * 获取指定类型的文章列表
  * @param params
@@ -40,9 +41,9 @@ export function getArticleDetail(id) {
 /**
  * 获取首页文章列表
  */
-export function getHomeArticleList(page) {
+export function getHomeArticleList(type, page) {
   return request({
-    url: `/article/list/${page.current}/${page.size}`,
+    url: `/article/list/${type}/${page.current}/${page.size}`,
     method: 'GET'
   })
 }

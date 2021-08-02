@@ -4,5 +4,8 @@
  * */
 module.exports = {
   baseApi: 'http://localhost:8087',
-  uploadUrl: "/file/upload"
+  uploadUrl: '/file/upload',
+  homeNav: 'home_article_nav',
+  attentionAuthorArticle: 'attention_author_article',
+  mineArticle: 'mine_article'
 }

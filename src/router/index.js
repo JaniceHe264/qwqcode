@@ -82,15 +82,12 @@ router.beforeEach((to, from, next) => {
         title: '提示',
         message: '请先登录'
       })
-      console.log(123)
       next({
         path: '/home',
         name: 'Home'
       })
     }
   }
-  console.log(to)
-  console.log(from)
   next();
 })
 
