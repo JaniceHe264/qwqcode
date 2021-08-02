@@ -11,8 +11,9 @@
       <div class="hot-body">
         <el-row>
           <el-col>
-            <div class="hot-body-item" v-for="(item,index) in 5" :key="index">
-              <p>为什么你没有女朋友？</p>
+            <div class="hot-body-item" v-for="(item,index) in articleList" :key="item.id"
+                 @click="goDetail(item.id , item.type)">
+              <p>{{ item.title }}</p>
               <el-divider></el-divider>
             </div>
           </el-col>
@@ -23,8 +24,37 @@
 </template>
 
 <script>
+import {getHotArticleList} from "@/api/article";
+
 export default {
-  name: "HotTopic"
+  name: "HotTopic",
+  data() {
+    return {
+      articleList: []
+    }
+  },
+  created() {
+    this.getArticleList();
+  },
+  methods: {
+    goDetail(id, type) {
+      this.$router.push({
+        path: '/detail',
+        name: 'Detail',
+        query: {
+          id: id,
+          type: type
+        }
+      })
+    },
+    getArticleList() {
+      getHotArticleList(5, 'question').then(res => {
+        if (res.code == 200) {
+          this.articleList = res.data.records;
+        }
+      })
+    }
+  }
 }
 </script>
 

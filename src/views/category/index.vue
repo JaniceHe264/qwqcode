@@ -9,8 +9,9 @@
                 <h3>
                   最新文章 <span class="iconfont icon-new"></span>
                 </h3>
-                <div class="article-item" v-for="(item,index) in 4" :key="index">
-                  <p>我是根据右边分类变换的最新文章</p>
+                <div class="article-item" v-for="(item,index) in newData" :key="item.id"
+                     @click="goDetail(item.id , item.type)">
+                  <p>{{ item.title }}</p>
                   <el-divider></el-divider>
                 </div>
               </el-card>
@@ -21,8 +22,9 @@
                 <h3>
                   热门文章
                 </h3>
-                <div class="article-item" v-for="(item,index) in 4" :key="index">
-                  <p>我是根据右边分类变换的热门文章</p>
+                <div class="article-item" v-for="(item,index) in hotData" :key="item.id"
+                     @click="goDetail(item.id , item.type)">
+                  <p>{{ item.title }}</p>
                   <el-divider></el-divider>
                 </div>
               </el-card>
@@ -60,17 +62,55 @@ import QuestionItem from "@/views/home/item/question/index";
 import IdeaItem from "@/views/home/item/idea/index";
 import BlogItem from "@/views/home/item/blog/index";
 
+import {getHotArticleList, getNewArticleList} from "@/api/article";
+
 export default {
   name: "Category",
   data() {
     return {
       curCategory: 'blog',
+      hotData: [],
+      newData: []
     }
   },
   created() {
-
+    this.getHot();
+    this.getNew()
   },
-  methods: {},
+  watch: {
+    curCategory(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.getHot();
+        this.getNew();
+      }
+    }
+  },
+  methods: {
+    goDetail(id, type) {
+      this.$router.push({
+        path: '/detail',
+        name: 'Detail',
+        query: {
+          id: id,
+          type: type
+        }
+      })
+    },
+    getNew() {
+      getNewArticleList(5, this.curCategory).then(res => {
+        if (res.code == 200) {
+          this.newData = res.data.records;
+        }
+      })
+    },
+    getHot() {
+      getHotArticleList(5, this.curCategory).then(res => {
+        if (res.code == 200) {
+          this.hotData = res.data.records;
+        }
+      })
+    }
+  },
   components: {
     HotTopic, QuestionItem, IdeaItem, BlogItem,
   }

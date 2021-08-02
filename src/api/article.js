@@ -4,6 +4,29 @@
  */
 import request from "@/utils/request";
 
+/**
+ * 获取指定文章类型的最新列表
+ * @param size
+ * @param type
+ */
+export function getNewArticleList(size,type){
+  return request({
+    url: `/article/new/list/${size}/${type}`,
+    method: 'GET'
+  })
+}
+
+/**
+ * 获取指定文章类型的热门列表
+ * @param size
+ * @param type
+ */
+export function getHotArticleList(size, type) {
+  return request({
+    url: `/article/hot/list/${size}/${type}`,
+    method: 'GET'
+  })
+}
 
 /**
  * 获取指定类型的文章列表
