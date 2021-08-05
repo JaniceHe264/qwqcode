@@ -48,7 +48,7 @@ export default {
       })
     },
     getArticleList() {
-      getHotArticleList(5, 'question').then(res => {
+      getHotArticleList(1, 5, 'question').then(res => {
         if (res.code == 200) {
           this.articleList = res.data.records;
         }

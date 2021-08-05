@@ -32,17 +32,20 @@
           </div>
         </el-col>
         <el-col :span="15">
-          <div class="center">
+          <div class="center" v-infinite-scroll="loadMore">
             <el-tabs v-model="curCategory" class="demo-tabs">
               <el-tab-pane label="博客" name="blog">
-                <BlogItem v-for="(item,index) in 6" :key="index" :has-first-pic="true"/>
               </el-tab-pane>
               <el-tab-pane label="问题" name="question">
-                <QuestionItem v-for="(item,index) in 6" :key="index"/>
               </el-tab-pane>
               <el-tab-pane label="想法" name="idea">
-                <IdeaItem v-for="(item,index) in 6" :key="index"/>
               </el-tab-pane>
+              <div v-for="item in articleList" :key="item.id">
+                <ArticleItem
+                  :theme-color="item.type == 'blog' ? '#26bfbf' : item.type == 'idea' ? '#f4c807' : '#0066ff'"
+                  :article-info="item" :has-first-pic="item.firstUrl != '' && item.firstUrl != null"/>
+              </div>
+              <div class="footer"><span class="info-text">{{ infoText }}</span></div>
             </el-tabs>
           </div>
         </el-col>
@@ -58,9 +61,7 @@
 
 <script>
 import HotTopic from "@/components/base/HotTopic";
-import QuestionItem from "@/views/home/item/question/index";
-import IdeaItem from "@/views/home/item/idea/index";
-import BlogItem from "@/views/home/item/blog/index";
+import ArticleItem from '@/views/home/item'
 
 import {getHotArticleList, getNewArticleList} from "@/api/article";
 
@@ -70,7 +71,15 @@ export default {
     return {
       curCategory: 'blog',
       hotData: [],
-      newData: []
+      newData: [],
+      page: {
+        current: 0,
+        pages: 1,
+        total: 0,
+        size: 5
+      },
+      articleList: [],
+      infoText: '玩命加载中...'
     }
   },
   created() {
@@ -82,10 +91,36 @@ export default {
       if (newVal != oldVal) {
         this.getHot();
         this.getNew();
+        this.articleList = []
+        this.page.current = 0;
+        this.infoText = '玩命加载中...'
+        this.getArticleList()
       }
     }
   },
   methods: {
+    loadMore() {
+      if (this.page.current > this.page.pages) {
+        return;
+      }
+      this.page.current++;
+      this.getArticleList()
+    },
+    getArticleList() {
+      getNewArticleList(this.page.current, this.page.size, this.curCategory).then(res => {
+        if (res.code == 200) {
+          this.page.current = res.data.current;
+          this.page.pages = res.data.pages;
+          this.page.total = res.data.total;
+          this.page.size = res.data.size;
+          this.articleList.push(...res.data.records)
+          if (this.page.current > this.page.pages) {
+            this.infoText = "没有更多了哦"
+          }
+          console.log(this.articleList)
+        }
+      })
+    },
     goDetail(id, type) {
       this.$router.push({
         path: '/detail',
@@ -97,14 +132,14 @@ export default {
       })
     },
     getNew() {
-      getNewArticleList(5, this.curCategory).then(res => {
+      getNewArticleList(1, 5, this.curCategory).then(res => {
         if (res.code == 200) {
           this.newData = res.data.records;
         }
       })
     },
     getHot() {
-      getHotArticleList(5, this.curCategory).then(res => {
+      getHotArticleList(1, 5, this.curCategory).then(res => {
         if (res.code == 200) {
           this.hotData = res.data.records;
         }
@@ -112,7 +147,7 @@ export default {
     }
   },
   components: {
-    HotTopic, QuestionItem, IdeaItem, BlogItem,
+    HotTopic, ArticleItem
   }
 }
 </script>
@@ -223,6 +258,15 @@ export default {
       ::v-deep .el-tabs__item {
         &:hover {
           color: $theme-color;
+        }
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px 0;
+
+        .info-text {
+          color: $info-color;
         }
       }
     }

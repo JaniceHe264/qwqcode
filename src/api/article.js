@@ -9,9 +9,9 @@ import request from "@/utils/request";
  * @param size
  * @param type
  */
-export function getNewArticleList(size,type){
+export function getNewArticleList(current, size, type) {
   return request({
-    url: `/article/new/list/${size}/${type}`,
+    url: `/article/new/list/${current}/${size}/${type}`,
     method: 'GET'
   })
 }
@@ -21,9 +21,9 @@ export function getNewArticleList(size,type){
  * @param size
  * @param type
  */
-export function getHotArticleList(size, type) {
+export function getHotArticleList(current, size, type) {
   return request({
-    url: `/article/hot/list/${size}/${type}`,
+    url: `/article/hot/list/${current}/${size}/${type}`,
     method: 'GET'
   })
 }
