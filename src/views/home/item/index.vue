@@ -40,24 +40,21 @@
           <div class="btn-group">
             <el-row v-if="articleInfo.type == 'blog'">
               <el-col :span="5">
-                <el-button color="#26bfbf" plain size="large">
+                <el-button color="#26bfbf" plain size="large" @click="giveALike">
                   我觉得很有用&nbsp;
                   <span class="iconfont icon-good"></span>
-                  <span>{{ articleInfo.praiseNum }}</span>
+                  <span>{{ praiseNum }}</span>
                 </el-button>
               </el-col>
               <el-col :span="4">
-                <div class="comment" @click="sendComment">
+                <div class="comment" @click="goDetail(articleInfo.id, articleInfo.type)">
                   <span class="iconfont icon-comment"></span>
                   <span>{{ articleInfo.commentNum }}条评论</span>
                 </div>
-                <!--                <div class="send-comment">-->
-                <!--                  <SendComment :dialog-visible="showSendComment" :article-info="blogInfo" @closed="closeSendComment"/>-->
-                <!--                </div>-->
               </el-col>
               <el-col :span="3">
-                <div class="collect" @click="articleInfo.isCollect = !articleInfo.isCollect">
-                  <div v-if="articleInfo.isCollect">
+                <div class="collect" @click="collect({typeId: articleInfo.id , type: 'article'})">
+                  <div v-if="!isCollect">
                     <span class="iconfont icon-collect"></span>
                     <span>收藏博客</span>
                   </div>
@@ -108,21 +105,21 @@
             </el-row>
             <el-row v-if="articleInfo.type == 'idea'">
               <el-col :span="6">
-                <el-button type="warning" plain size="large">
+                <el-button type="warning" plain size="large" @click="giveALike">
                   这是一个好想法&nbsp;
                   <span class="iconfont icon-good"></span>
-                  <span>{{ articleInfo.praiseNum }}</span>
+                  <span>{{ praiseNum }}</span>
                 </el-button>
               </el-col>
               <el-col :span="4">
-                <div class="comment">
+                <div class="comment" @click="goDetail(articleInfo.id, articleInfo.type)">
                   <span class="iconfont icon-comment"></span>
                   <span>{{ articleInfo.commentNum }}条评论</span>
                 </div>
               </el-col>
               <el-col :span="3">
-                <div class="collect" @click="articleInfo.isCollect = !articleInfo.isCollect">
-                  <div v-if="articleInfo.isCollect">
+                <div class="collect" @click="collect({typeId: articleInfo.id , type: 'article'})">
+                  <div v-if="!isCollect">
                     <span class="iconfont icon-collect"></span>
                     <span>收藏想法</span>
                   </div>
@@ -175,27 +172,27 @@
               <el-col :span="7">
                 <el-row>
                   <el-col :span="15">
-                    <el-button type="primary" size="large">
+                    <el-button type="primary" size="large" @click="goDetail(articleInfo.id, articleInfo.type)">
                       <span class="iconfont icon-answer"></span>&nbsp;给他提建议
                     </el-button>
                   </el-col>
                   <el-col :span="9">
-                    <el-button type="primary" plain size="large">
+                    <el-button type="primary" plain size="large" @click="giveALike">
                       <span class="iconfont icon-good"></span>
-                      <span>{{ articleInfo.praiseNum }}</span>
+                      <span>{{ praiseNum }}</span>
                     </el-button>
                   </el-col>
                 </el-row>
               </el-col>
               <el-col :span="4">
-                <div class="comment">
+                <div class="comment" @click="goDetail(articleInfo.id, articleInfo.type)">
                   <span class="iconfont icon-comment"></span>
                   <span>{{ articleInfo.commentNum }}条评论</span>
                 </div>
               </el-col>
               <el-col :span="4">
-                <div class="collect" @click="articleInfo.isCollect = !articleInfo.isCollect">
-                  <div v-if="articleInfo.isCollect">
+                <div class="collect" @click="collect({typeId: articleInfo.id , type: 'article'})">
+                  <div v-if="!isCollect">
                     <el-icon :size="25">
                       <CirclePlus/>
                     </el-icon>
@@ -255,9 +252,10 @@
 
 <script>
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled, Picture} from "@element-plus/icons-vue";
-import SendComment from "@/components/base/SendComment";
 import {getColor} from "@/utils/utils";
 import {marked} from "marked"
+import {addPraise} from "@/api/praise";
+import {addCollect} from "@/api/collect";
 
 export default {
   name: "ArticleItem",
@@ -268,7 +266,8 @@ export default {
       squareUrl:
         require('@/assets/image/shy.png'),
       contentHoldNum: 24,
-      showSendComment: false,
+      praiseNum: 0,
+      isCollect: false
     }
   },
   props: {
@@ -288,6 +287,8 @@ export default {
   },
   created() {
     this.contentHoldNum = this.hasFirstPic ? 18 : 24
+    this.praiseNum = this.articleInfo.praiseNum;
+    this.isCollect = this.articleInfo.isCollect;
   },
   computed: {
     compiledMarkdown() {
@@ -299,14 +300,38 @@ export default {
     },
   },
   methods: {
+    collect(data) {
+      addCollect(data).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+          this.isCollect = !this.isCollect;
+        }
+      })
+    },
+    giveALike() {
+      addPraise({
+        "giveType": 'article',
+        "praiseType": 1,
+        "typeId": this.articleInfo.id
+      }).then(res => {
+        if (res.code == 200) {
+          this.$notify({
+            title: '提示',
+            message: res.message,
+            type: 'success'
+          })
+          if (res.message == '点赞成功') {
+            this.praiseNum++;
+          }
+        }
+      })
+    },
     getLabelColor(id) {
       return getColor(id)
-    },
-    closeSendComment(closed) {
-      this.showSendComment = !closed;
-    },
-    sendComment() {
-      this.showSendComment = true
     },
     goDetail(id, type) {
       this.$router.push({
@@ -320,7 +345,6 @@ export default {
     },
   },
   components: {
-    SendComment,
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Picture
   }
 }

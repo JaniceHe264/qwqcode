@@ -8,23 +8,26 @@
               <h4>标签列表</h4>
             </div>
             <div class="tag-name-panel">
-              <div class="tag-item" :class="{active: curTag == item.name}" v-for="(item , index) in tagList"
+              <div class="tag-item" :class="{active: curTag == item.labelName}" v-for="(item , index) in tagList"
                    :key="index"
-                   @click="curTag = item.name">
-                <p>{{ item.name }}</p>
+                   @click="changeCurTag(item)">
+                <p>{{ item.labelName }}</p>
               </div>
             </div>
           </div>
         </el-col>
         <el-col :span="19">
-          <div class="right">
+          <div class="right" v-infinite-scroll="loadMore">
             <el-row>
-              <el-col v-for="(item , index) in articleList" :key="index">
-                <QuestionItem v-if="item.type == 'question'"/>
-                <IdeaItem v-if="item.type == 'idea'"/>
-                <BlogItem v-if="item.type == 'blog'" :has-first-pic="item.hasFirstPic"/>
+              <el-col v-for="(item , index) in articleList" :key="item.id">
+                <ArticleItem
+                  :theme-color="item.type == 'blog' ? '#26bfbf' : item.type == 'idea' ? '#f4c807' : '#0066ff'"
+                  :article-info="item" :has-first-pic="item.firstUrl != '' && item.firstUrl != null"/>
               </el-col>
             </el-row>
+            <div class="footer"><span class="info-text">
+              {{ infoText }}
+            </span></div>
           </div>
         </el-col>
       </el-row>
@@ -37,49 +40,87 @@ import QuestionItem from "@/views/home/item/question/index";
 import IdeaItem from "@/views/home/item/idea/index";
 import BlogItem from "@/views/home/item/blog/index";
 
+import {tagPrefix} from '@/config'
+
+import {getAllLabelName} from "@/api/label";
+import {getFixTagArticleList} from "@/api/article";
+import ArticleItem from "@/views/home/item/index";
+
 export default {
   name: "Tag",
   data() {
     return {
-      curTag: 'blog',
-      tagList: [
-        {
-          name: 'blog'
-        }, {
-          name: '学习'
-        }, {
-          name: '生活'
-        }, {
-          name: '心理'
-        }, {
-          name: 'java'
-        }, {
-          name: '学习笔记'
-        }
-      ],
-      articleList: [
-        {
-          type: 'blog',
-          hasFirstPic: false
-        },
-        {
-          type: 'blog',
-          hasFirstPic: true
-        },
-        {
-          type: 'question'
-        },
-        {
-          type: 'idea'
-        }
-      ],
+      tagPrefix: tagPrefix,
+      curTag: '',
+      tagList: [],
+      articleList: [],
+      page: {
+        current: 1,
+        size: 5,
+        total: 0,
+        pages: 1
+      },
+      infoText: '玩命加载中...',
     }
   },
   created() {
-
+    this.getTagList();
   },
-  methods: {},
+  watch: {
+    curTag(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.page.current = 1;
+        this.articleList = []
+        this.infoText = '玩命加载中...'
+        this.getArticleList()
+      }
+    }
+  },
+  methods: {
+    loadMore() {
+      if (this.curTag) {
+        if (this.page.current > this.page.pages) {
+          return;
+        }
+        this.page.current++;
+        this.getArticleList()
+      }
+    },
+    getArticleList() {
+      getFixTagArticleList({
+        tag: this.tagPrefix + this.curTag,
+        type: 'article',
+        current: this.page.current,
+        size: this.page.size
+      }).then(res => this.res2DataList(res))
+    },
+    changeCurTag(label) {
+      this.curTag = label.labelName;
+    },
+    res2DataList(res) {
+      if (res.code == 200) {
+        this.page.current = res.data.current;
+        this.page.pages = res.data.pages;
+        this.page.total = res.data.total;
+        this.page.size = res.data.size;
+        this.articleList.push(...res.data.records)
+        if (this.page.current > this.page.pages) {
+          this.infoText = "没有更多了哦"
+        }
+        console.log(this.articleList)
+      }
+    },
+    getTagList() {
+      getAllLabelName().then(res => {
+        if (res.code == 200) {
+          this.tagList = res.data;
+          this.curTag = this.tagList[0].labelName
+        }
+      })
+    }
+  },
   components: {
+    ArticleItem,
     QuestionItem, IdeaItem, BlogItem,
   }
 }
@@ -143,6 +184,15 @@ export default {
       box-sizing: border-box;
       width: 100%;
       min-height: 100px;
+
+      .footer {
+        text-align: center;
+        padding: 20px 0;
+
+        .info-text {
+          color: $info-color;
+        }
+      }
     }
   }
 }

@@ -125,7 +125,7 @@ export default {
       if (flag) {
         this.page.current = 1;
         this.articleList = [];
-        this.getArticleList()
+        this.getArticleList(this.curActive)
       }
     },
     loadMore() {

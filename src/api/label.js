@@ -4,6 +4,15 @@
  */
 import request from "@/utils/request";
 
+/**
+ * 获取标签名字
+ */
+export function getAllLabelName(){
+  return request({
+    url: '/label/all/name',
+    method: 'GET'
+  })
+}
 
 /**
  * 获取标签列表

@@ -5,6 +5,32 @@
 import request from "@/utils/request";
 
 /**
+ * 获取指定标签名的文章列表
+ * @param params
+ */
+export function getFixTagArticleList(params) {
+  return request({
+    url: '/article/fix/tag',
+    method: 'GET',
+    params
+  })
+}
+
+/**
+ * 获取指定类型文章的推荐列表
+ * @param type 类型 如果 type = article 就是所有类型
+ * @param current
+ * @param size
+ * @param flag 是否登录
+ */
+export function getRecommendArticleList(type, current, size, flag) {
+  return request({
+    url: `/article/recommend/${type}/${current}/${size}/${flag}`,
+    method: 'GET'
+  })
+}
+
+/**
  * 获取指定文章类型的最新列表
  * @param size
  * @param type
