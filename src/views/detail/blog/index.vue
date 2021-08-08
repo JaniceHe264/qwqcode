@@ -16,16 +16,16 @@
             </div>
             <div class="author-info">
               <el-row>
-                <div class="left">
-                  <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
+                <div class="left" v-if="blogInfo.user">
+                  <el-avatar :src="blogInfo.user.avatarUrl" shape="square" :size="50"></el-avatar>
                   <div>
-                    <div v-if="blogInfo.user">
+                    <div>
                       <span class="user-name">{{
                           blogInfo.user.nickname ? blogInfo.user.nickname : blogInfo.user.username
                         }}</span><br>
-                      <span class="idea-num">希望我一切顺利</span>
+                      <span class="idea-num">{{ blogInfo.user.introduction }}</span>
                     </div>
-                    <div>
+                    <div v-if="getUser.id != blogInfo.user.id">
                       <el-button color="#26bfbf" size="large" plain
                                  @click="collect({typeId: blogInfo.user.id , type: 'author'})">
                         <el-icon v-if="blogInfo.userIsAttention">
@@ -123,22 +123,32 @@
               <el-card shadow="hover">
                 <h3>作者的其他博客</h3>
                 <el-divider></el-divider>
-                <span v-for="(item,index) in 5" :key="index">
-                    <el-link class="blog-link" type="success">我是作者的另一个想法</el-link>
-                    <el-link type="info">{{ index + 1 }}人赞同</el-link>
+                <div v-if="otherArticle.length > 0">
+                  <span v-for="(item,index) in otherArticle" :key="item.id">
+                    <el-link class="blog-link" type="success" @click="changeArticle(item)">{{ item.title }}</el-link>
+                    <el-link type="info">{{ item.praiseNum }}人喜欢</el-link>
                     <el-divider></el-divider>
                   </span>
+                </div>
+                <div v-else>
+                  <el-empty description="什么都麻油..."></el-empty>
+                </div>
               </el-card>
             </div>
             <div class="correlation">
               <el-card shadow="hover">
                 <h3>相关博客</h3>
                 <el-divider></el-divider>
-                <span v-for="(item,index) in 5" :key="index">
-                    <el-link class="blog-link" type="success">我是一个与该想法类似的想法</el-link>
-                    <el-link type="info">{{ index + 1 }}人赞同</el-link>
+                <div v-if="relationArticleList.length > 0">
+                  <span v-for="(item,index) in relationArticleList" :key="item.id">
+                    <el-link class="blog-link" type="success" @click="changeArticle(item)">{{ item.title }}</el-link>
+                    <el-link type="info">{{ item.praiseNum }}人喜欢</el-link>
                     <el-divider></el-divider>
                   </span>
+                </div>
+                <div v-else>
+                  <el-empty description="什么都麻油..."></el-empty>
+                </div>
               </el-card>
             </div>
           </div>
@@ -154,22 +164,29 @@ import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-import {getArticleDetail, addBrowse} from "@/api/article";
+import {getArticleDetail, addBrowse, getFixTagArticleList, getUserArticleList} from "@/api/article";
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
 import {addFootprint} from "@/api/footprint";
+import {mapGetters, mapActions} from 'vuex'
+
+import {tagPrefix, userIdPrefix} from '@/config'
 
 export default {
   name: "Blog",
   data() {
     return {
+      tagPrefix: tagPrefix,
+      userIdPrefix: userIdPrefix,
       loading: false,
       meUrl:
         require('@/assets/image/me.jpg'),
       blogLove: false,
       blogInfo: {},
       showSendComment: false,
-      browseNum: 0
+      browseNum: 0,
+      relationArticleList: [],
+      otherArticle: []
     }
   },
   created() {
@@ -178,7 +195,42 @@ export default {
   components: {
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   },
+  computed: {
+    ...mapGetters(['getToken', 'getUser'])
+  },
   methods: {
+    getOtherArticle() {
+      getUserArticleList(userIdPrefix + this.blogInfo.user.id, 1, 6, this.blogInfo.type).then(res => {
+        if (res.code == 200) {
+          this.otherArticle = res.data.records.filter(item => item.id != this.blogInfo.id);
+        }
+      })
+    },
+    changeArticle(data) {
+      this.$router.push({
+        path: '/detail',
+        name: 'Detail',
+        query: {
+          id: data.id,
+          type: data.type
+        }
+      })
+      this.blogInfo = data;
+      this.addBrowseNum()
+    },
+    getRelationArticle() {
+      const tags = this.blogInfo.labelList.map(temp => this.tagPrefix + temp.labelName).join(',')
+      getFixTagArticleList({
+        tag: tags,
+        current: 1,
+        size: 6,
+        type: this.blogInfo.type
+      }).then(res => {
+        if (res.code == 200) {
+          this.relationArticleList = res.data.records.filter(temp => temp.id != this.blogInfo.id);
+        }
+      })
+    },
     loadBlogInfo(flag) {
       if (flag) {
         this.getBlogInfo()
@@ -232,6 +284,8 @@ export default {
           this.blogInfo = res.data;
         }
         this.loading = false;
+        this.getRelationArticle();
+        this.getOtherArticle()
       })
     },
     closeSendComment(closed) {

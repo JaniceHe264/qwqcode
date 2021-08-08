@@ -109,7 +109,7 @@ import {uploadImg} from "@/api/file";
 import {uploadUrl, baseApi} from '@/config'
 import {mapGetters} from 'vuex'
 import {getLabelList} from "@/api/label";
-import {saveArticle} from "@/api/article";
+import {saveArticle, getArticleDetail} from "@/api/article";
 import {checkLogin} from "@/utils/utils";
 
 export default {
@@ -142,6 +142,10 @@ export default {
       this.$router.go(-1);
       return;
     }
+    if (this.$route.query.id) {
+      this.articleForm.id = this.$route.query.id;
+      this.getArticleDetail(this.articleForm.id)
+    }
     this.articleForm.type = this.$route.query.type
     this.getLabelOptions()
   },
@@ -154,15 +158,26 @@ export default {
     }
   },
   methods: {
+    getArticleDetail(id) {
+      getArticleDetail(id).then(res => {
+        if (res.code == 200) {
+          if(!res.data.content){
+            res.data.content = ''
+          }
+          res.data.labels = res.data.labelList.map(temp => temp.labelName);
+          this.articleForm = res.data;
+        }
+      })
+    },
     subArticle() {
-      if(this.articleForm.title.trim() == ''){
+      if (this.articleForm.title.trim() == '') {
         return this.$notify({
           title: '提示',
           message: '请输入文章标题',
           type: 'error'
         })
       }
-      if(this.articleForm.labels.length == 0){
+      if (this.articleForm.labels.length == 0) {
         return this.$notify({
           title: '提示',
           message: '请至少选择一个标签，没有也可以自己创建哦',

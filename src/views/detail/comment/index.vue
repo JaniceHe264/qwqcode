@@ -11,7 +11,7 @@
         <div class="body" v-if="commentList.length">
           <div class="comment-item" v-for="(item,index) in commentList" :key="item.id">
             <div class="author-info">
-              <el-avatar :src="meUrl" :size="35" shape="square"></el-avatar>
+              <el-avatar :src="item.user.avatarUrl" :size="35" shape="square"></el-avatar>
               <span class="user-name">{{ item.user.nickname ? item.user.nickname : item.user.username }}</span>
               <span class="send-time">评论时间{{ item.createTime }}</span>
             </div>
@@ -27,7 +27,7 @@
             </div>
             <div class="comment-item" v-for="(item2,index) in item.childList" :key="item2.id">
               <div class="author-info">
-                <el-avatar :src="meUrl" :size="25" shape="square"></el-avatar>
+                <el-avatar :src="item2.user.avatarUrl" :size="25" shape="square"></el-avatar>
                 <span class="user-name">{{
                     item2.user.nickname ? item2.user.nickname : item2.user.username
                   }}</span>

@@ -7,10 +7,10 @@
             <div class="author-info">
               <el-row>
                 <el-col :span="12">
-                  <div class="left">
-                    <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
+                  <div class="left" v-if="ideaInfo.user">
+                    <el-avatar :src="ideaInfo.user.avatarUrl" shape="square" :size="50"></el-avatar>
                     <div>
-                      <div v-if="ideaInfo.user">
+                      <div>
                         <span class="user-name">{{
                             ideaInfo.user.nickname ? ideaInfo.user.nickname : ideaInfo.user.username
                           }}</span>
@@ -128,22 +128,32 @@
               <el-card shadow="hover">
                 <h3>作者的其他想法</h3>
                 <el-divider></el-divider>
-                <span v-for="(item,index) in 5" :key="index">
-                    <el-link type="warning">我是作者的另一个想法</el-link>
-                    <el-link type="info">{{ index + 1 }}人赞同</el-link>
+                <div v-if="otherArticle.length > 0">
+                  <span v-for="(item,index) in otherArticle" :key="item.id">
+                    <el-link class="blog-link" type="warning" @click="changeArticle(item)">{{ item.title }}</el-link>
+                    <el-link type="info">{{ item.praiseNum }}人喜欢</el-link>
                     <el-divider></el-divider>
                   </span>
+                </div>
+                <div v-else>
+                  <el-empty description="什么都麻油..."></el-empty>
+                </div>
               </el-card>
             </div>
             <div class="correlation">
               <el-card shadow="hover">
                 <h3>相关想法</h3>
                 <el-divider></el-divider>
-                <span v-for="(item,index) in 5" :key="index">
-                    <el-link type="warning">我是一个与该想法类似的想法</el-link>
-                    <el-link type="info">{{ index + 1 }}人赞同</el-link>
+                <div v-if="relationArticleList.length > 0">
+                  <span v-for="(item,index) in relationArticleList" :key="item.id">
+                    <el-link class="blog-link" type="warning" @click="changeArticle(item)">{{ item.title }}</el-link>
+                    <el-link type="info">{{ item.praiseNum }}人赞同</el-link>
                     <el-divider></el-divider>
                   </span>
+                </div>
+                <div v-else>
+                  <el-empty description="什么都麻油..."></el-empty>
+                </div>
               </el-card>
             </div>
           </div>
@@ -157,30 +167,68 @@
 import {AlarmClock, CirclePlus, Key, Plus, Promotion, UserFilled, Check} from "@element-plus/icons-vue";
 import Comment from '../comment'
 import SendComment from "@/components/base/SendComment";
-import {addBrowse, getArticleDetail} from "@/api/article";
+import {addBrowse, getArticleDetail, getFixTagArticleList, getUserArticleList} from "@/api/article";
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
 import {addFootprint} from "@/api/footprint";
 
+import {tagPrefix, userIdPrefix} from '@/config'
+
 export default {
   name: "Idea",
   data() {
     return {
+      userIdPrefix: userIdPrefix,
+      tagPrefix: tagPrefix,
       meUrl:
         require('@/assets/image/me.jpg'),
       ideaLove: false,
       showSendComment: false,
       ideaInfo: {},
       loading: false,
-      browseNum: 0
+      browseNum: 0,
+      relationArticleList: [],
+      otherArticle: []
     }
   },
   created() {
     this.addBrowseNum();
   },
   methods: {
+    getOtherArticle() {
+      getUserArticleList(userIdPrefix + this.ideaInfo.user.id, 1, 6, this.ideaInfo.type).then(res => {
+        if (res.code == 200) {
+          this.otherArticle = res.data.records.filter(item => item.id != this.ideaInfo.id);
+        }
+      })
+    },
+    changeArticle(data) {
+      this.$router.push({
+        path: '/detail',
+        name: 'Detail',
+        query: {
+          id: data.id,
+          type: data.type
+        }
+      })
+      this.ideaInfo = data;
+      this.addBrowseNum()
+    },
+    getRelationArticle() {
+      const tags = this.ideaInfo.labelList.map(temp => this.tagPrefix + temp.labelName).join(',')
+      getFixTagArticleList({
+        tag: tags,
+        current: 1,
+        size: 6,
+        type: this.ideaInfo.type
+      }).then(res => {
+        if (res.code == 200) {
+          this.relationArticleList = res.data.records.filter(temp => temp.id != this.ideaInfo.id);
+        }
+      })
+    },
     loadIdeaInfo(flag) {
       if (flag) {
         this.getIdeaInfo()
@@ -234,6 +282,8 @@ export default {
           this.ideaInfo = res.data;
         }
         this.loading = false;
+        this.getRelationArticle()
+        this.getOtherArticle()
       })
     },
     closeSendComment(closed) {

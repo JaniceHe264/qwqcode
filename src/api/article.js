@@ -4,6 +4,14 @@
  */
 import request from "@/utils/request";
 
+export function getUserArticleList(uid, current, size, type) {
+  return request({
+    url: `/article/list/user/${uid}/${current}/${size}/${type}`,
+    method: 'GET'
+  })
+}
+
+
 /**
  * 获取指定标签名的文章列表
  * @param params

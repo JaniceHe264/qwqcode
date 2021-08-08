@@ -62,7 +62,7 @@ const routes = [
         name: 'SendArticle',
         component: () => import('@/views/sendArticle'),
         meta: {
-          requireAuth: false
+          requireAuth: true
         }
       }
     ]

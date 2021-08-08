@@ -8,5 +8,6 @@ module.exports = {
   homeNav: 'home_article_nav',
   attentionAuthorArticle: 'attention_author_article',
   mineArticle: 'mine_article',
-  tagPrefix: 'sj_know_tag_prefix:'
+  tagPrefix: 'sj_know_tag_prefix:',
+  userIdPrefix: 'sj_user_id_prefix:'
 }

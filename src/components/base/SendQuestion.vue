@@ -9,7 +9,7 @@
       >
         <el-row :gutter="10">
           <el-col :span="2">
-            <el-avatar :src="meUrl" shape="square"></el-avatar>
+            <el-avatar :src="getUser.avatarUrl" shape="square"></el-avatar>
           </el-col>
           <el-col :span="20">
             <div class="textarea-panel">
@@ -76,21 +76,31 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getToken']),
+    ...mapGetters(['getToken', 'getUser']),
     hasContent() {
       return this.questionForm.title.length > 0
     }
   },
   props: {
+    updateData: {
+      type: Object,
+      default: null
+    },
     dialogVisible: {
       type: Boolean,
       default: false
     }
   },
   created() {
+    if (this.updateData) {
+      this.questionForm = this.updateData;
+    }
     this.getLabelOptions();
   },
   watch: {
+    updateData(newVal, oldVal) {
+      this.questionForm = newVal;
+    },
     dialogVisible(newVal, oldVal) {
       if (newVal) {
         this.getLabelOptions()

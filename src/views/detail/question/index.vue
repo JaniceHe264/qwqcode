@@ -4,10 +4,10 @@
       <div class="question" v-infinite-scroll="loadMore">
         <div class="question-content-panel">
           <div class="question-content">
-            <div class="left">
-              <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
+            <div class="left" v-if="!questionInfo.anonymity && questionInfo.user">
+              <el-avatar :src="questionInfo.user.avatarUrl" shape="square" :size="50"></el-avatar>
               <div>
-                <div v-if="questionInfo.user">
+                <div>
                   <span
                     class="user-name">{{
                       questionInfo.user.nickname ? questionInfo.user.nickname : questionInfo.user.username
@@ -28,6 +28,15 @@
                 </div>
               </div>
             </div>
+            <div class="left" v-else>
+              <el-avatar :src="meUrl" shape="square" :size="50"></el-avatar>
+              <div>
+                <div>
+                  <span
+                    class="user-name">作者已匿名</span>
+                </div>
+              </div>
+            </div>
             <h2>{{ questionInfo.title }}</h2>
             <div class="tag-panel">
               <el-tag
@@ -40,12 +49,6 @@
               </el-tag>
             </div>
             <div class="content">
-              <!--              <p>-->
-              <!--                我是一个问题的内容测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文-->
-              <!--                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文-->
-              <!--                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文-->
-              <!--                字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字-->
-              <!--              </p>-->
             </div>
             <div class="btn-group">
               <el-row :gutter="questionInfo.isCollect ? 0 : 30">
@@ -171,11 +174,16 @@
                 <el-card shadow="hover">
                   <h3>相关问题</h3>
                   <el-divider></el-divider>
-                  <span v-for="(item,index) in 6" :key="index">
-                    <el-link type="primary">我是一个相关问题的标题标题标题标题标题标题标题</el-link>
-                    <el-link type="info">{{ index + 1 }}个回答</el-link>
+                  <div v-if="relationArticleList.length > 0">
+                  <span v-for="(item,index) in relationArticleList" :key="item.id">
+                    <el-link class="blog-link" type="primary" @click="changeArticle(item)">{{ item.title }}</el-link>
+                    <el-link type="info">{{ item.collectNum }}人关注</el-link>
                     <el-divider></el-divider>
                   </span>
+                  </div>
+                  <div v-else>
+                    <el-empty description="什么都麻油..."></el-empty>
+                  </div>
                 </el-card>
               </div>
             </el-col>
@@ -211,15 +219,18 @@ import SendComment from "@/components/base/SendComment";
 import Comment from "@/views/detail/comment/index";
 import {addCollect} from "@/api/collect";
 import {addPraise} from "@/api/praise";
-import {getArticleDetail, addBrowse} from "@/api/article";
+import {getArticleDetail, addBrowse, getFixTagArticleList} from "@/api/article";
 import {addFootprint} from "@/api/footprint";
 import {getCommentList} from "@/api/comment";
 import {addComment} from "@/api/comment";
+
+import {tagPrefix} from '@/config'
 
 export default {
   name: "index",
   data() {
     return {
+      tagPrefix: tagPrefix,
       answerContent: '',
       answerQuestionVisible: false,
       activeName: 'answer',
@@ -239,13 +250,40 @@ export default {
         total: 0
       },
       answerList: [],
-      infoText: '玩命加载中...'
+      infoText: '玩命加载中...',
+      relationArticleList: []
     }
   },
   created() {
     this.addBrowseNum();
+    console.log(this.questionInfo);
   },
   methods: {
+    changeArticle(data) {
+      this.$router.push({
+        path: '/detail',
+        name: 'Detail',
+        query: {
+          id: data.id,
+          type: data.type
+        }
+      })
+      this.questionInfo = data;
+      this.addBrowseNum()
+    },
+    getRelationArticle() {
+      const tags = this.questionInfo.labelList.map(temp => this.tagPrefix + temp.labelName).join(',')
+      getFixTagArticleList({
+        tag: tags,
+        current: 1,
+        size: 6,
+        type: this.questionInfo.type
+      }).then(res => {
+        if (res.code == 200) {
+          this.relationArticleList = res.data.records.filter(temp => temp.id != this.questionInfo.id);
+        }
+      })
+    },
     praiseComment(data) {
       addPraise({
         "giveType": 'answer',
@@ -373,6 +411,7 @@ export default {
           this.getAnswerData()
         }
         this.loading = false;
+        this.getRelationArticle()
       })
     },
     closeSendComment(closed) {

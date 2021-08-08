@@ -2,7 +2,6 @@
   <div class="article-item">
     <div class="panel">
       <div class="item article">
-        <!-- 博客 -->
         <div>
           <h3>{{ articleInfo.title }}</h3>
           <div class="tag-panel">
@@ -35,6 +34,11 @@
             <el-link class="article-link" type="success" :style="{color: themeColor}" :underline="false"
                      @click="goDetail(articleInfo.id , articleInfo.type)">
               阅读全文
+            </el-link>
+            <el-link class="edit-link" type="success" :style="{color: themeColor}" :underline="false"
+                     v-if="this.$route.path == '/personal'"
+                     @click="toEdit(articleInfo)">
+              编辑
             </el-link>
           </p>
           <div class="btn-group">
@@ -234,7 +238,7 @@
                   <span>{{ articleInfo.updateTime }}</span>
                 </div>
               </el-col>
-              <el-col :span="2">
+              <el-col :span="2" v-if="!articleInfo.anonymity">
                 <div class="author-info">
                   <el-icon :size="25">
                     <UserFilled/>
@@ -242,9 +246,21 @@
                   <span>{{ articleInfo.user.nickname ? articleInfo.user.nickname : articleInfo.user.username }}</span>
                 </div>
               </el-col>
+              <el-col :span="2" v-else>
+                <div class="author-info">
+                  <el-icon :size="25">
+                    <UserFilled/>
+                  </el-icon>
+                  <span>匿名</span>
+                </div>
+              </el-col>
             </el-row>
           </div>
         </div>
+        <SendQuestion :dialog-visible="questionVisible"
+                      @closed="closeSendQuestion"
+                      @saveQuestion="reloadArticleList"
+                      :update-data="editQuestionData"/>
       </div>
     </div>
   </div>
@@ -256,11 +272,14 @@ import {getColor} from "@/utils/utils";
 import {marked} from "marked"
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
+import SendQuestion from "@/components/base/SendQuestion";
 
 export default {
   name: "ArticleItem",
   data() {
     return {
+      editQuestionData: null,
+      questionVisible: false,
       circleUrl:
         require('@/assets/image/me.jpg'),
       squareUrl:
@@ -300,6 +319,12 @@ export default {
     },
   },
   methods: {
+    closeSendQuestion(closed) {
+      this.questionVisible = !closed;
+    },
+    reloadArticleList(flag) {
+      this.$emit("reload", flag);
+    },
     collect(data) {
       addCollect(data).then(res => {
         if (res.code == 200) {
@@ -333,6 +358,23 @@ export default {
     getLabelColor(id) {
       return getColor(id)
     },
+    toEdit(data) {
+      if (data.type == 'question') {
+        this.questionVisible = true;
+        const temp = JSON.parse(JSON.stringify(data));
+        temp.tags = temp.labelList.map(temp => temp.labelName);
+        this.editQuestionData = temp;
+        return;
+      }
+      this.$router.push({
+        path: '/send-article',
+        name: 'SendArticle',
+        query: {
+          id: data.id,
+          type: data.type
+        }
+      })
+    },
     goDetail(id, type) {
       this.$router.push({
         path: '/detail',
@@ -345,6 +387,7 @@ export default {
     },
   },
   components: {
+    SendQuestion,
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Picture
   }
 }
@@ -365,6 +408,10 @@ export default {
           &:hover {
             opacity: .8;
           }
+        }
+
+        .edit-link {
+          margin-left: 10px;
         }
 
         .el-image {

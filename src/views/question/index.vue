@@ -122,7 +122,7 @@ export default {
     },
   },
   created() {
-
+    this.getArticleList();
   },
   components: {
     NavPanel,

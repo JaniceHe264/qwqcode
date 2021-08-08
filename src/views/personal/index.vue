@@ -163,6 +163,7 @@
                     <Answer :answer-data="article"/>
                   </div>
                   <ArticleItem v-else
+                               @reload="reload"
                                :theme-color="article.type == 'blog' ? '#26bfbf' : article.type == 'idea' ? '#f4c807' : '#0066ff'"
                                :article-info="article"
                                :has-first-pic="article.firstUrl != '' && article.firstUrl != null"/>
@@ -310,6 +311,13 @@ export default {
   },
   methods: {
     ...mapActions(['setUser', 'clearInfo']),
+    reload(flag) {
+      if (flag) {
+        this.page.current = 1;
+        this.showData.data = [];
+        this.getShowData();
+      }
+    },
     subPassUpdate(formName) {
       this.$refs[formName].validate(flag => {
         if (flag) {

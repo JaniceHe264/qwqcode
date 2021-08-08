@@ -49,7 +49,10 @@
                     :article-info="item" :has-first-pic="item.firstUrl != '' && item.firstUrl != null"/>
                 </el-col>
               </el-row>
-              <div class="footer">
+              <div v-if="articleList.length == 0">
+                <el-empty description="什么都麻油..."/>
+              </div>
+              <div class="footer" v-else>
                 <div>
                   <span class="info-text">{{ infoText }}</span>
                 </div>
