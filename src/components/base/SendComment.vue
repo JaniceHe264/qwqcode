@@ -94,7 +94,7 @@ export default {
             message: '评论成功',
             type: 'success'
           })
-          console.log(123)
+          // console.log(123)
           this.$emit("commentSuccess", true)
           this.handleClose()
         }

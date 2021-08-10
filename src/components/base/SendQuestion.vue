@@ -120,7 +120,7 @@ export default {
         }
         subForm.tags = subForm.tags.join(',')
         saveArticle(subForm).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.code == 200) {
             this.$notify({
               title: '提示',
@@ -142,7 +142,7 @@ export default {
     getLabelOptions() {
       if (this.getToken) {
         getLabelList().then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.code == 200) {
             this.options = res.data;
           }

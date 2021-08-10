@@ -175,6 +175,7 @@ import {addCollect} from "@/api/collect";
 import {addFootprint} from "@/api/footprint";
 
 import {tagPrefix, userIdPrefix} from '@/config'
+import {mapGetters} from "vuex";
 
 export default {
   name: "Idea",
@@ -195,6 +196,17 @@ export default {
   },
   created() {
     this.addBrowseNum();
+  },
+  computed: {
+    ...mapGetters(['getToken', 'getUser']),
+    articleId() {
+      return this.$route.query.id;
+    }
+  },
+  watch: {
+    articleId(newVal, oldVal) {
+      this.addBrowseNum()
+    }
   },
   methods: {
     getOtherArticle() {
@@ -236,7 +248,7 @@ export default {
     },
     addVisited() {
       addFootprint({articleId: this.$route.query.id}).then(res => {
-        console.log(res.message)
+        // console.log(res.message)
       })
     },
     addBrowseNum() {

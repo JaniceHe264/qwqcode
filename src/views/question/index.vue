@@ -73,7 +73,7 @@ export default {
   },
   watch: {
     curType(newVal, oldVal) {
-      console.log(newVal, oldVal)
+      // console.log(newVal, oldVal)
       if (newVal != oldVal) {
         this.page.current = 1;
         this.articleList = []
@@ -108,7 +108,7 @@ export default {
         if (this.page.current > this.page.pages) {
           this.infoText = "没有更多了哦"
         }
-        console.log(this.articleList)
+        // console.log(this.articleList)
       }
     },
     getArticleList() {

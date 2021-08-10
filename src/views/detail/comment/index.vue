@@ -116,7 +116,7 @@ export default {
       this.getCommentData();
     },
     getCommentData() {
-      console.log(this.articleInfo)
+      // console.log(this.articleInfo)
       getCommentList({
         articleId: this.articleInfo.id,
         current: this.page.current,

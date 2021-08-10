@@ -45,9 +45,10 @@
                     </el-input>
                   </el-col>
                   <el-col :span="6">
-                    <el-button type="success" size="large" class="sub-question-btn" @click="openSendQuestion">提出问题
+                    <el-button type="success" size="large" class="sub-question-btn" @click="search">找一找
                     </el-button>
-                    <SendQuestion :dialog-visible="showSendQuestion" @closed="closeSendQuestion"/>
+                    <SearchResult @loadPage="loadPage" :result-visible="searchResultVisible" @closed="closeSearchResult"
+                                  :result-data="articleData"></SearchResult>
                   </el-col>
                 </el-row>
               </el-col>
@@ -109,23 +110,36 @@
 <script>
 import {Search} from '@element-plus/icons-vue'
 import Login from "@/components/base/Login";
-import SendQuestion from "@/components/base/SendQuestion";
 import {mapActions, mapGetters} from 'vuex'
+import SearchResult from "@/components/base/SearchResult";
+import {searchByKeyword} from "@/api/article";
+import {searchPrefix} from '@/config'
 
 export default {
   name: "Header",
   data() {
     return {
+      searchPrefix: searchPrefix,
+      searchResultVisible: false,
       keyword: '',
       showLogin: false,
       circleUrl:
         require('@/assets/image/me.jpg'),
       loginType: 'login',
-      showSendQuestion: false,
+      infoText: '玩命加载中...',
+      page: {
+        current: 1,
+        size: 5,
+        total: 0,
+        pages: 1
+      },
+      articleData: {
+        records: []
+      }
     }
   },
   components: {
-    SendQuestion,
+    SearchResult,
     Login,
     Search
   },
@@ -134,8 +148,58 @@ export default {
   },
   created() {
   },
+  watch: {
+    keyword(newVal, oldVal) {
+      this.page = {
+        current: 1,
+        size: 5,
+        total: 0,
+        pages: 1
+      };
+      this.articleData = {}
+    }
+  },
   methods: {
     ...mapActions(['clearInfo']),
+    loadPage(data) {
+      console.log(data);
+      this.page.current = ++data.current;
+      this.search();
+    },
+    closeSearchResult(flag) {
+      if (flag) {
+        this.searchResultVisible = !flag;
+        this.page = {
+          current: 1,
+          size: 5,
+          total: 0,
+          pages: 1
+        };
+        this.articleData = {}
+      }
+    },
+    search() {
+      if (this.keyword.trim() == '') {
+        return this.$notify.error({
+          title: '提示',
+          message: '搜索关键字不能为空',
+          type: 'error'
+        })
+      }
+      searchByKeyword(this.searchPrefix + this.keyword, this.page.current, this.page.size).then(res => {
+        if (res.code == 200) {
+          this.page.current = res.data.current;
+          this.page.size = res.data.size;
+          this.page.total = res.data.total;
+          this.page.pages = res.data.pages;
+          const temp = this.articleData.records || []
+          this.articleData = res.data
+          temp.push(...this.articleData.records);
+          this.articleData.records = temp;
+        }
+      })
+      this.searchResultVisible = true;
+    },
     logout() {
       this.clearInfo(true)
       if (this.$route.meta.requireAuth) {
@@ -145,17 +209,11 @@ export default {
         })
       }
     },
-    openSendQuestion() {
-      this.showSendQuestion = true
-    },
-    closeSendQuestion(closed) {
-      this.showSendQuestion = !closed;
-    },
     dialogClosed(closed) {
       this.showLogin = !closed;
     },
     goto(route) {
-      console.log(123)
+      // console.log(123)
       this.$router.push(route);
     },
     goHome() {

@@ -198,7 +198,7 @@ export default {
     getLabelOptions() {
       if (this.getToken) {
         getLabelList().then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.code == 200) {
             this.options = res.data;
           }
@@ -216,7 +216,7 @@ export default {
     async uploadImg(fileList, callback) {
       const result = await Promise.all(
         Array.from(fileList).map(file => {
-          console.log(file);
+          // console.log(file);
           return new Promise((rev, rej) => {
             const form = new FormData()
             form.append("file", file)

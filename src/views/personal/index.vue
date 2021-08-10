@@ -307,7 +307,7 @@ export default {
   },
   created() {
     this.getArticleNumGroup()
-    console.log(this.userInfo)
+    // console.log(this.userInfo)
   },
   methods: {
     ...mapActions(['setUser', 'clearInfo']),
@@ -408,7 +408,7 @@ export default {
       })
     },
     changeTabHandle(activeName, oldName) {
-      console.log(123)
+      // console.log(123)
       if (activeName != oldName) {
         this.page.current = 1;
         this.showData.data = [];
@@ -419,11 +419,15 @@ export default {
     },
     getArticleNumGroup() {
       getUserArticleNum().then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.code == 200) {
           this.userArticleNumGroup = res.data;
           if (res.data.length) {
-            this.activeName = res.data[0].value
+            if (this.$route.query.active) {
+              this.activeName = this.$route.query.active
+            } else {
+              this.activeName = res.data[0].value
+            }
           }
         }
       })

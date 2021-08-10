@@ -225,6 +225,7 @@ import {getCommentList} from "@/api/comment";
 import {addComment} from "@/api/comment";
 
 import {tagPrefix} from '@/config'
+import {mapGetters} from "vuex";
 
 export default {
   name: "index",
@@ -256,7 +257,18 @@ export default {
   },
   created() {
     this.addBrowseNum();
-    console.log(this.questionInfo);
+    // console.log(this.questionInfo);
+  },
+  computed: {
+    ...mapGetters(['getToken', 'getUser']),
+    articleId() {
+      return this.$route.query.id;
+    }
+  },
+  watch: {
+    articleId(newVal, oldVal) {
+      this.addBrowseNum()
+    }
   },
   methods: {
     changeArticle(data) {
@@ -418,7 +430,7 @@ export default {
       this.showSendComment = !closed;
     },
     sendComment() {
-      console.log(123)
+      // console.log(123)
       this.showSendComment = true
     },
   },

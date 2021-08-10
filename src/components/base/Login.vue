@@ -284,7 +284,7 @@ export default {
     getCaptcha() {
       if (!this.getToken) {
         captcha().then(res => {
-          console.log(res);
+          // console.log(res);
           this.captchaUrl = res.data.image;
           this.loginForm.key = res.data.key
         })

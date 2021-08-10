@@ -4,6 +4,27 @@
  */
 import request from "@/utils/request";
 
+/**
+ * 搜索接口
+ * @param keyword
+ * @param current
+ * @param size
+ */
+export function searchByKeyword(keyword , current , size){
+  return request({
+    url: `/article/search/${keyword}/${current}/${size}`,
+    method: 'GET'
+  })
+}
+
+/**
+ * 获取用户文章列表
+ * @param uid
+ * @param current
+ * @param size
+ * @param type
+ * @returns {AxiosPromise}
+ */
 export function getUserArticleList(uid, current, size, type) {
   return request({
     url: `/article/list/user/${uid}/${current}/${size}/${type}`,

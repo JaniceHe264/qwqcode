@@ -196,7 +196,15 @@ export default {
     Plus, Key, CirclePlus, Promotion, AlarmClock, UserFilled, Comment, SendComment, MdEditor, Check
   },
   computed: {
-    ...mapGetters(['getToken', 'getUser'])
+    ...mapGetters(['getToken', 'getUser']),
+    articleId() {
+      return this.$route.query.id;
+    }
+  },
+  watch: {
+    articleId(newVal, oldVal) {
+      this.addBrowseNum()
+    }
   },
   methods: {
     getOtherArticle() {
@@ -244,7 +252,7 @@ export default {
     addBrowseNum() {
       addBrowse(this.$route.query.id).then(res => {
         this.getBlogInfo()
-        console.log("添加浏览次数成功")
+        // console.log("添加浏览次数成功")
         this.browseNum = res.data
         this.addVisited()
       })

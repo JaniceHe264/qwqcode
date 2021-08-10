@@ -124,7 +124,7 @@ export default {
       })
     },
     reLoadArticleList(flag) {
-      console.log(flag)
+      // console.log(flag)
       if (flag) {
         this.page.current = 1;
         this.articleList = [];
@@ -149,7 +149,7 @@ export default {
           if (this.page.current > this.page.pages) {
             this.infoText = '没有更多了哦~'
           }
-          console.log(this.articleList)
+          // console.log(this.articleList)
         }
       })
     },
@@ -158,7 +158,7 @@ export default {
         path: '/detail',
         name: 'Detail',
         query: {
-          id: 1,
+          id: id,
           type: type
         }
       })

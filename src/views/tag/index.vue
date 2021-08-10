@@ -107,7 +107,7 @@ export default {
         if (this.page.current > this.page.pages) {
           this.infoText = "没有更多了哦"
         }
-        console.log(this.articleList)
+        // console.log(this.articleList)
       }
     },
     getTagList() {
