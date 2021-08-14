@@ -2,6 +2,7 @@
   <div class="search">
     <div class="panel">
       <el-dialog
+        autofocus
         v-model="resultVisible"
         width="35%"
         destroy-on-close

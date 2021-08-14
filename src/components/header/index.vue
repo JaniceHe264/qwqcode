@@ -36,7 +36,8 @@
               <el-col :span="14">
                 <el-row :gutter="20">
                   <el-col :span="18">
-                    <el-input v-model="keyword" placeholder="输入您想搜索的关键字..." clearable size="large">
+                    <el-input v-model="keyword" ref="searchInput" placeholder="输入您想搜索的关键字..." clearable size="large"
+                              @keydown.enter="searchParent">
                       <template #suffix>
                         <el-icon class="el-input__icon">
                           <Search/>
@@ -45,7 +46,7 @@
                     </el-input>
                   </el-col>
                   <el-col :span="6">
-                    <el-button type="success" size="large" class="sub-question-btn" @click="search">找一找
+                    <el-button type="success" size="large" class="sub-question-btn" @click="searchParent">找一找
                     </el-button>
                     <SearchResult @loadPage="loadPage" :result-visible="searchResultVisible" @closed="closeSearchResult"
                                   :result-data="articleData"></SearchResult>
@@ -119,6 +120,7 @@ export default {
   name: "Header",
   data() {
     return {
+      searchFlag: false,
       searchPrefix: searchPrefix,
       searchResultVisible: false,
       keyword: '',
@@ -161,6 +163,13 @@ export default {
   },
   methods: {
     ...mapActions(['clearInfo']),
+    searchParent(){
+      if(this.searchFlag){
+        return;
+      }
+      this.searchFlag = true;
+      this.search();
+    },
     loadPage(data) {
       console.log(data);
       this.page.current = ++data.current;
@@ -176,10 +185,12 @@ export default {
           pages: 1
         };
         this.articleData = {}
+        this.searchFlag = false;
       }
     },
     search() {
       if (this.keyword.trim() == '') {
+        this.searchFlag = false;
         return this.$notify.error({
           title: '提示',
           message: '搜索关键字不能为空',
