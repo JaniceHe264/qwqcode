@@ -360,6 +360,10 @@ export default {
       this.userInfoForm = JSON.parse(JSON.stringify(this.getUser))
     },
     userUpdate(user) {
+      if (!user.birthday || user.birthday == 'NaN-aN-aN aN:aN:aN') {
+        this.userInfoForm.birthday = null
+        user.birthday = null;
+      }
       updateUserInfo(user).then(res => {
         if (res.code == 200) {
           this.$notify({

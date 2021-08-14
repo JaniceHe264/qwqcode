@@ -171,7 +171,7 @@ export default {
       this.search();
     },
     loadPage(data) {
-      console.log(data);
+      // console.log(data);
       this.page.current = ++data.current;
       this.search();
     },
