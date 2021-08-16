@@ -91,7 +91,7 @@ export default {
         require('@/assets/image/me.jpg'),
       squareUrl:
         require('@/assets/image/shy.png'),
-      curActive: 1,
+      curActive: '',
       page: {
         current: 1,
         size: 5,
@@ -139,12 +139,18 @@ export default {
       this.getArticleList(this.curActive);
     },
     getArticleList(type) {
+      if (!type) {
+        return;
+      }
       getHomeArticleList(type, this.page).then(res => {
         if (res.code == 200) {
           this.page.current = res.data.current;
           this.page.size = res.data.size;
           this.page.total = res.data.total;
           this.page.pages = res.data.pages;
+          if (this.page.current == 1 && this.articleList.length > 0) {
+            this.articleList = [];
+          }
           this.articleList.push(...res.data.records);
           if (this.page.current > this.page.pages) {
             this.infoText = '没有更多了哦~'

@@ -83,7 +83,9 @@
                     </el-col>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false" @click="logout"><i class="iconfont icon-exit"></i>退出</el-link>
+                        <el-link :underline="false" @click="logout"><i
+                          class="iconfont icon-exit"></i>退出
+                        </el-link>
                       </div>
                     </el-col>
                   </el-row>
@@ -121,6 +123,7 @@ export default {
   data() {
     return {
       searchFlag: false,
+      fullscreenLoading: false,
       searchPrefix: searchPrefix,
       searchResultVisible: false,
       keyword: '',
@@ -163,8 +166,8 @@ export default {
   },
   methods: {
     ...mapActions(['clearInfo']),
-    searchParent(){
-      if(this.searchFlag){
+    searchParent() {
+      if (this.searchFlag) {
         return;
       }
       this.searchFlag = true;
@@ -212,13 +215,23 @@ export default {
       this.searchResultVisible = true;
     },
     logout() {
-      this.clearInfo(true)
-      if (this.$route.meta.requireAuth) {
-        this.$router.push({
-          path: '/home',
-          name: 'Home'
-        })
-      }
+      const loading = this.$loading({
+        lock: true,
+        text: '正在清理缓存中，请稍等...',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      this.clearInfo(true).then(() => {
+        setTimeout(() => {
+          if (this.$route.meta.requireAuth) {
+            this.$router.push({
+              path: '/home',
+              name: 'Home'
+            })
+          }
+          loading.close();
+        }, 2000)
+      })
+
     },
     dialogClosed(closed) {
       this.showLogin = !closed;

@@ -5,6 +5,17 @@
 
 import request from "@/utils/request";
 
+/**
+ * 删除回答 或 评论
+ * @param id
+ */
+export function removeComment(id){
+  return request({
+    url: `/comment/del/${id}`,
+    method: 'DELETE'
+  })
+}
+
 export function addComment(data) {
   return request({
     url: '/comment/add',

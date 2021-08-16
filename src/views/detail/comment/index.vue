@@ -103,6 +103,8 @@ export default {
   watch: {
     articleInfo(newVal, oldVal) {
       if (newVal) {
+        this.page.current = 1;
+        this.commentList = []
         this.getCommentData()
       }
     }
@@ -116,7 +118,6 @@ export default {
       this.getCommentData();
     },
     getCommentData() {
-      // console.log(this.articleInfo)
       getCommentList({
         articleId: this.articleInfo.id,
         current: this.page.current,
@@ -131,12 +132,18 @@ export default {
           this.page.total = res.data.total;
           if (this.page.current >= this.page.pages) {
             this.infoText = '没有更多了哦~'
+          }else{
+            this.infoText = '玩命加载中...'
           }
         }
       })
     },
     loadCommentList(flag) {
-      this.getCommentData()
+      if (flag) {
+        this.page.current = 1;
+        this.commentList = []
+        this.getCommentData()
+      }
     },
     closeSendComment(closed) {
       this.showSendComment = !closed

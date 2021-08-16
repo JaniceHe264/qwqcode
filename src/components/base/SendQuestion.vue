@@ -95,7 +95,6 @@ export default {
     if (this.updateData) {
       this.questionForm = this.updateData;
     }
-    this.getLabelOptions();
   },
   watch: {
     updateData(newVal, oldVal) {

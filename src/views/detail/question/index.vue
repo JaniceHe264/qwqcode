@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="panel" v-loading="loading">
-      <div class="question" v-infinite-scroll="loadMore">
+      <div class="question">
         <div class="question-content-panel">
           <div class="question-content">
             <div class="left" v-if="!questionInfo.anonymity && questionInfo.user">
@@ -14,7 +14,7 @@
                     }}</span>
                   <span class="idea-num">共提出了{{ questionInfo.user.questionNum }}个问题</span>
                 </div>
-                <div>
+                <div v-if="getUser.id != questionInfo.user.id">
                   <el-button type="primary" circle plain
                              @click="collect({typeId: questionInfo.user.id , type: 'author'})">
                     <el-icon v-if="questionInfo.userIsAttention">
@@ -141,7 +141,7 @@
           <el-row>
             <el-col :span="18">
               <el-tabs v-model="activeName">
-                <el-tab-pane :label="page.total + '个回答'" name="answer">
+                <el-tab-pane :label="page.total + '个回答'" name="answer" v-infinite-scroll="loadAnswer">
                   <div class="answer-content" v-for="(item , index) in answerList" :key="item.id">
                     <div class="author-info">
                       <el-avatar :src="squareUrl" shape="square" size="50"></el-avatar>
@@ -267,10 +267,19 @@ export default {
   },
   watch: {
     articleId(newVal, oldVal) {
-      this.addBrowseNum()
+      if(newVal){
+        this.addBrowseNum()
+      }
     }
   },
   methods: {
+    loadAnswer(){
+      this.page.current++;
+      if (this.page.current > this.page.pages) {
+        return;
+      }
+      this.getAnswerData();
+    },
     changeArticle(data) {
       this.$router.push({
         path: '/detail',
@@ -344,13 +353,6 @@ export default {
     answerQuestion() {
       this.answerQuestionVisible = true;
     },
-    loadMore() {
-      this.page.current++;
-      if (this.page.current > this.page.pages) {
-        return;
-      }
-      this.getCommentData();
-    },
     getAnswerData() {
       getCommentList({
         articleId: this.questionInfo.id,
@@ -366,6 +368,8 @@ export default {
           this.page.total = res.data.total;
           if (this.page.current >= this.page.pages) {
             this.infoText = '没有更多了哦~'
+          }else{
+            this.infoText = '玩命加载中...'
           }
         }
       })

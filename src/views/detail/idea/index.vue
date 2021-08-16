@@ -205,7 +205,9 @@ export default {
   },
   watch: {
     articleId(newVal, oldVal) {
-      this.addBrowseNum()
+      if(newVal){
+        this.addBrowseNum()
+      }
     }
   },
   methods: {

@@ -47,6 +47,7 @@ export default {
       return getColor(num);
     },
     getUserArticleNumData() {
+      if (!this.getToken) return;
       getUserArticleNum().then(res => {
         if (res.code == 200) {
           this.articleNumData = res.data;

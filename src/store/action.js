@@ -14,7 +14,7 @@ const actions = {
     commit(types.setUser, user)
   },
   clearInfo({commit}, isHint) {
-    logout().then(res => {
+    const res =  logout().then(res => {
       if(isHint){
         ElNotification({
           type: 'success',

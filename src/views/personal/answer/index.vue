@@ -19,7 +19,7 @@
         <p>{{ answerData.content }}</p>
       </div>
       <div class="answer-info">
-        <el-link type="info" :underline="false">删除</el-link>
+        <el-link type="info" :underline="false" @click="remove">删除</el-link>
       </div>
       <el-divider/>
     </div>
@@ -27,6 +27,9 @@
 </template>
 
 <script>
+
+import {removeComment} from "@/api/comment";
+
 export default {
   name: "Answer",
   data() {
@@ -39,11 +42,30 @@ export default {
       type: Object,
       required: true
     }
-
   },
   created() {
   },
-  methods: {}
+  methods: {
+    remove() {
+      this.$confirm("确定删除该回答吗？", "提示", {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(flag => {
+        removeComment(this.answerData.id).then(res => {
+          if (res.code == 200) {
+            this.$notify({
+              title: '提示',
+              message: '删除成功',
+              type: 'success'
+            })
+          }
+          this.$emit("delSuccess", true);
+        })
+      }).catch(() => {
+      })
+    }
+  }
 }
 </script>
 

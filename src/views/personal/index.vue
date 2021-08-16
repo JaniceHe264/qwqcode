@@ -152,7 +152,8 @@
       <div class="panel-bottom">
         <el-row :gutter="20">
           <el-col :span="18">
-            <el-tabs v-model="activeName" class="demo-tabs" :before-leave="changeTabHandle">
+            <el-tabs v-model="activeName" class="demo-tabs" :before-leave="changeTabHandle"
+                     v-infinite-scroll="loadMore">
               <el-tab-pane :name="item.value" v-for="(item,index) in userArticleNumGroup"
                            :key="item.id">
                 <template #label>
@@ -160,7 +161,7 @@
                 </template>
                 <template v-for="article in showData.data" :key="article.id">
                   <div v-if="showData.type == 'answer'">
-                    <Answer :answer-data="article"/>
+                    <Answer :answer-data="article" @delSuccess="reload"/>
                   </div>
                   <ArticleItem v-else
                                @reload="reload"
@@ -316,6 +317,8 @@ export default {
         this.page.current = 1;
         this.showData.data = [];
         this.getShowData();
+        this.getArticleNumGroup()
+        this.userArticleNumGroup[0].articleNum--;
       }
     },
     subPassUpdate(formName) {
@@ -418,23 +421,28 @@ export default {
         this.showData.data = [];
       }
       this.activeName = activeName;
+      this.$route.query.active = activeName;
       this.getShowData();
       return true;
     },
     getArticleNumGroup() {
-      getUserArticleNum().then(res => {
-        // console.log(res);
-        if (res.code == 200) {
-          this.userArticleNumGroup = res.data;
-          if (res.data.length) {
-            if (this.$route.query.active) {
-              this.activeName = this.$route.query.active
-            } else {
-              this.activeName = res.data[0].value
-            }
+      if (this.getToken) {
+        getUserArticleNum().then(res => {
+          // console.log(res);
+          if (res.code == 200) {
+            this.$nextTick(() => {
+              this.userArticleNumGroup = res.data;
+              if (res.data.length) {
+                if (this.$route.query.active) {
+                  this.activeName = this.$route.query.active
+                } else {
+                  this.activeName = res.data[0].value
+                }
+              }
+            })
           }
-        }
-      })
+        })
+      }
     }
   }
 }
