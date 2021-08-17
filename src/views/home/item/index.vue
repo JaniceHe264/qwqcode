@@ -40,6 +40,10 @@
                      @click="toEdit(articleInfo)">
               编辑
             </el-link>
+            <el-link class="del-link" type="danger" v-if="this.$route.path == '/personal' && showDel" :underline="false"
+                     @click="delArticle">
+              删除
+            </el-link>
           </p>
           <div class="btn-group">
             <el-row v-if="articleInfo.type == 'blog'">
@@ -273,6 +277,8 @@ import {marked} from "marked"
 import {addPraise} from "@/api/praise";
 import {addCollect} from "@/api/collect";
 import SendQuestion from "@/components/base/SendQuestion";
+import {removeComment} from "@/api/comment";
+import {delArticle} from "@/api/article";
 
 export default {
   name: "ArticleItem",
@@ -286,10 +292,14 @@ export default {
         require('@/assets/image/shy.png'),
       contentHoldNum: 24,
       praiseNum: 0,
-      isCollect: false
+      isCollect: false,
     }
   },
   props: {
+    showDel: {
+      type: Boolean,
+      default: false
+    },
     hasFirstPic: {
       default: false,
       type: Boolean
@@ -319,6 +329,25 @@ export default {
     },
   },
   methods: {
+    delArticle() {
+      this.$confirm("确定删除该文章吗？", "提示", {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(flag => {
+        delArticle(this.articleInfo.id).then(res => {
+          if (res.code == 200) {
+            this.$notify({
+              title: '提示',
+              message: '删除成功',
+              type: 'success'
+            })
+          }
+          this.$emit("delSuccess", true);
+        })
+      }).catch(() => {
+      })
+    },
     closeSendQuestion(closed) {
       this.questionVisible = !closed;
     },
@@ -334,6 +363,7 @@ export default {
             type: 'success'
           })
           this.isCollect = !this.isCollect;
+          this.reloadArticleList(true)
         }
       })
     },
@@ -411,6 +441,10 @@ export default {
         }
 
         .edit-link {
+          margin-left: 10px;
+        }
+
+        .del-link {
           margin-left: 10px;
         }
 

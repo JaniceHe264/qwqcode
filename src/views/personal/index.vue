@@ -164,6 +164,8 @@
                     <Answer :answer-data="article" @delSuccess="reload"/>
                   </div>
                   <ArticleItem v-else
+                               :show-del="(article.type == 'blog' || article.type == 'idea' || article.type == 'question') && activeName != 'footprint_num'"
+                               @delSuccess="reload"
                                @reload="reload"
                                :theme-color="article.type == 'blog' ? '#26bfbf' : article.type == 'idea' ? '#f4c807' : '#0066ff'"
                                :article-info="article"
@@ -182,7 +184,7 @@
           </el-col>
           <el-col :span="6">
             <div class="write">
-              <WritePanel/>
+              <WritePanel @saveQuestionSuccess="reload"/>
             </div>
             <div class="hot-topic">
               <HotTopic/>
@@ -318,7 +320,7 @@ export default {
         this.showData.data = [];
         this.getShowData();
         this.getArticleNumGroup()
-        this.userArticleNumGroup[0].articleNum--;
+        this.valueKey++;
       }
     },
     subPassUpdate(formName) {
@@ -432,6 +434,7 @@ export default {
           if (res.code == 200) {
             this.$nextTick(() => {
               this.userArticleNumGroup = res.data;
+              this.userArticleNumGroup.splice(1, 0)
               if (res.data.length) {
                 if (this.$route.query.active) {
                   this.activeName = this.$route.query.active

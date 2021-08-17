@@ -5,6 +5,17 @@
 import request from "@/utils/request";
 
 /**
+ * 删除文章
+ * @param id
+ */
+export function delArticle(id){
+  return request({
+    url: `/article/del/${id}`,
+    method: 'DELETE'
+  })
+}
+
+/**
  * 搜索接口
  * @param keyword
  * @param current
