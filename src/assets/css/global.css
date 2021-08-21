@@ -135,3 +135,11 @@ html, body {
   border-color: #f4c807 !important;
 }
 
+/**
+ * 后台菜单颜色
+ */
+
+.admin-index .el-sub-menu__title:hover {
+  background-color: #e7f1eb !important;
+}
+

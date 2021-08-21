@@ -78,7 +78,9 @@
                     </el-col>
                     <el-col>
                       <div class="avatar-item">
-                        <el-link :underline="false"><i class="iconfont icon-back-manage"></i>后台管理</el-link>
+                        <el-link :underline="false" @click="goto({path: '/admin'})"><i
+                          class="iconfont icon-back-manage"></i>后台管理
+                        </el-link>
                       </div>
                     </el-col>
                     <el-col>

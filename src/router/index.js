@@ -64,6 +64,16 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      }, {
+        path: '/admin',
+        name: 'AdminIndex',
+        component: () => import('@/views/admin'),
+        redirect: '/admin/article',
+        children: [{
+          path: '/admin/article',
+          name: 'AdminArticle',
+          component: () => import('@/views/admin/article')
+        }]
       }
     ]
   }

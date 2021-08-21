@@ -5,6 +5,18 @@
 import request from "@/utils/request";
 
 /**
+ * 管理端获取文章列表
+ * @param params
+ */
+export function getAdminArticleList(data){
+  return request({
+    url: '/article/admin/list',
+    method: 'POST',
+    data
+  })
+}
+
+/**
  * 删除文章
  * @param id
  */
