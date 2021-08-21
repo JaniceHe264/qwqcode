@@ -73,6 +73,10 @@ const routes = [
           path: '/admin/article',
           name: 'AdminArticle',
           component: () => import('@/views/admin/article')
+        }, {
+          path: '/admin/comment',
+          name: 'AdminComment',
+          component: () => import('@/views/admin/comment')
         }]
       }
     ]

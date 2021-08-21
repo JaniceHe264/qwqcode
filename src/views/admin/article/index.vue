@@ -41,8 +41,9 @@
             {{ scope.row.type == 'blog' ? '博客' : scope.row.type == 'question' ? '问题' : '想法' }}
           </template>
         </el-table-column>
-        <el-table-column prop="browse" label="被浏览次数" />
-        <el-table-column prop="praiseNum" label="被点赞数" />
+        <el-table-column prop="browse" label="被浏览次数"/>
+        <el-table-column prop="praiseNum" label="被点赞数"/>
+        <el-table-column prop="commentNum" label="评论数"/>
         <el-table-column label="标签列表" min-width="200">
           <template #default="scope">
             <div>
@@ -53,14 +54,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="是否匿名" >
+        <el-table-column label="是否匿名">
           <template #default="scope">
             <div>
               {{ scope.row.anonymity ? '是' : '否' }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="是否私密" >
+        <el-table-column label="是否私密">
           <template #default="scope">
             <div>
               {{ scope.row.isSecret ? '是' : '否' }}
@@ -74,6 +75,13 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="发布时间" min-width="200">
+          <template #default="scope">
+            <div>
+              {{ scope.row.createTime }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template #default="scope">
             <div>
@@ -84,6 +92,7 @@
       </el-table>
       <div class="page-box">
         <el-pagination
+          hide-on-single-page
           v-model:currentPage="page.current"
           :page-size="page.size"
           background

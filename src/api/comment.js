@@ -6,10 +6,33 @@
 import request from "@/utils/request";
 
 /**
+ * 管理端删除评论
+ * @param id
+ */
+export function delCommentAdmin(id) {
+  return request({
+    url: `/comment/admin/del/${id}`,
+    method: 'DELETE'
+  })
+}
+
+/**
+ * 获取管理端评论列表
+ * @param data
+ */
+export function getAdminCommentList(data) {
+  return request({
+    url: '/comment/admin/list',
+    method: 'POST',
+    data
+  })
+}
+
+/**
  * 删除回答 或 评论
  * @param id
  */
-export function removeComment(id){
+export function removeComment(id) {
   return request({
     url: `/comment/del/${id}`,
     method: 'DELETE'
