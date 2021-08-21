@@ -77,6 +77,10 @@ const routes = [
           path: '/admin/comment',
           name: 'AdminComment',
           component: () => import('@/views/admin/comment')
+        }, {
+          path: '/admin/menu',
+          name: 'AdminMenuList',
+          component: () => import('@/views/admin/menu/index')
         }]
       }
     ]

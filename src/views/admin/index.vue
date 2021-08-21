@@ -64,11 +64,9 @@ export default {
           id: 4,
           name: '菜单管理',
           children: [{
-            id: 11,
-            name: '添加菜单',
-          }, {
             id: 12,
             name: '菜单列表',
+            path: '/admin/menu'
           }]
         }, {
           id: 5,

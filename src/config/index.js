@@ -10,5 +10,6 @@ module.exports = {
   mineArticle: 'mine_article',
   tagPrefix: 'sj_know_tag_prefix:',
   userIdPrefix: 'sj_user_id_prefix:',
-  searchPrefix: 'sj_search_key_word_prefix:'
+  searchPrefix: 'sj_search_key_word_prefix:',
+  allMenu: 'all_menu'
 }
