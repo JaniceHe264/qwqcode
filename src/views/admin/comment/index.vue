@@ -132,6 +132,10 @@ export default {
           this.page.total = res.data.total;
           this.page.pages = res.data.pages;
           this.commentList = res.data.records;
+          if (res.data.records.length == 0 && this.page.current != 1) {
+            this.page.current--
+            this.getCommentList();
+          }
         }
         this.loading = false;
       })

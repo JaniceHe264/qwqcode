@@ -54,11 +54,9 @@ export default {
           id: 3,
           name: '用户管理',
           children: [{
-            id: 9,
-            name: '添加用户',
-          }, {
             id: 10,
             name: '用户列表',
+            path: '/admin/user'
           }]
         }, {
           id: 4,

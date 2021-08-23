@@ -81,6 +81,10 @@ const routes = [
           path: '/admin/menu',
           name: 'AdminMenuList',
           component: () => import('@/views/admin/menu/index')
+        }, {
+          path: '/admin/user',
+          name: 'AdminUserList',
+          component: () => import('@/views/admin/user/index')
         }]
       }
     ]
