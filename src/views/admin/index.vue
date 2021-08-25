@@ -2,7 +2,7 @@
   <div class="admin-index">
     <el-container>
       <el-aside width="300px">
-        <div class="left-menu">
+        <div class="left-menu" v-if="menuList.length > 0">
           <el-menu
             router
             :default-active="menuList[0].children[0].path"
@@ -29,62 +29,37 @@
 </template>
 
 <script>
+import {getUserMenuList} from "@/api/menu";
+
 export default {
   name: "AdminIndex",
   data() {
     return {
-      menuList: [
-        {
-          id: 1,
-          name: '文章管理',
-          children: [{
-            id: 7,
-            name: '文章列表',
-            path: '/admin/article'
-          }]
-        }, {
-          id: 2,
-          name: '评论管理',
-          children: [{
-            id: 8,
-            name: '评论列表',
-            path: '/admin/comment'
-          }]
-        }, {
-          id: 3,
-          name: '用户管理',
-          children: [{
-            id: 10,
-            name: '用户列表',
-            path: '/admin/user'
-          }]
-        }, {
-          id: 4,
-          name: '菜单管理',
-          children: [{
-            id: 12,
-            name: '菜单列表',
-            path: '/admin/menu'
-          }]
-        }, {
-          id: 5,
-          name: '角色管理',
-          children: [{
-            id: 13,
-            name: '添加角色',
-          }, {
-            id: 14,
-            name: '角色列表',
-          }]
-        }, {
-          id: 6,
-          name: '权限管理',
-          children: [{
-            id: 15,
-            name: '权限列表',
-          }]
+      menuList: []
+    }
+  },
+  created() {
+    this.getMenuList()
+  },
+  methods: {
+    getMenuList() {
+      getUserMenuList().then(res => {
+        if (res.code == 200) {
+          const menuList = res.data.filter(item => item.parentId == 0)
+          this.list2tree(res.data, menuList)
+          this.menuList = menuList;
+          console.log(this.menuList)
         }
-      ]
+      })
+    },
+    list2tree(list, data) {
+      if (data.length == 0) {
+        return data
+      }
+      data.forEach(item => {
+        item.children = list.filter(l => l.parentId == item.id);
+        this.list2tree(list, item.children);
+      })
     }
   }
 }

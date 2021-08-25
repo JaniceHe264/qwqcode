@@ -1,6 +1,6 @@
 import Cookie from "js-cookie";
 import getters from "@/store/getters";
-import {setUser, setToken, clearInfo} from '@/store/type'
+import {setUser, setToken, clearInfo, setAuth} from '@/store/type'
 import {TOKEN_PREFIX} from "@/utils/utils";
 
 /**
@@ -10,6 +10,7 @@ import {TOKEN_PREFIX} from "@/utils/utils";
 const state = {
   token: Cookie.get("token") ? Cookie.get("token") : '',
   user: Cookie.get("user") ? JSON.parse(Cookie.get("user")) : '',
+  auth: Cookie.get("auth") ? Cookie.get("auth") : ''
 }
 
 const mutations = {
@@ -25,8 +26,14 @@ const mutations = {
   [clearInfo](state) {
     state.token = '';
     state.user = '';
+    state.auth = '';
     Cookie.set("token", '', {expires: -1})
     Cookie.set("user", '', {expires: -1})
+    Cookie.set("auth", '', {expires: -1})
+  },
+  [setAuth](state, auth) {
+    state.auth = auth;
+    Cookie.set("auth", state.auth, {expires: 7})
   }
 }
 

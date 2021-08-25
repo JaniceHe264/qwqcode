@@ -9,5 +9,8 @@ export const setToken = "setToken"
 // 设置用户信息
 export const setUser = "setUser"
 
+// 设置权限信息
+export const setAuth = "setAuth"
+
 // 清空信息
 export const clearInfo = "clearInfo"

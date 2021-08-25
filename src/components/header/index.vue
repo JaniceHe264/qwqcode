@@ -76,7 +76,7 @@
                         </el-link>
                       </div>
                     </el-col>
-                    <el-col>
+                    <el-col v-if="getAuth.indexOf('sys:menu') != -1">
                       <div class="avatar-item">
                         <el-link :underline="false" @click="goto({path: '/admin'})"><i
                           class="iconfont icon-back-manage"></i>后台管理
@@ -151,7 +151,7 @@ export default {
     Search
   },
   computed: {
-    ...mapGetters(['getToken', 'getUser'])
+    ...mapGetters(['getToken', 'getUser', 'getAuth'])
   },
   created() {
   },

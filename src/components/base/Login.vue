@@ -219,7 +219,7 @@ export default {
     ...mapGetters(['getToken']),
   },
   methods: {
-    ...mapActions(['setToken', 'setUser']),
+    ...mapActions(['setToken', 'setUser', 'setAuth']),
     subRegister(formName) {
       this.$refs[formName].validate(val => {
         if (val) {
@@ -271,8 +271,10 @@ export default {
               res.data.user.birthday = dateFormat(new Date(res.data.user.birthday), 'yyyy-MM-dd HH:mm:ss')
               const token = res.data.token;
               const user = res.data.user;
+              const auth = res.data.auth;
               this.setToken(token);
               this.setUser(user);
+              this.setAuth(auth);
               // console.log(this.getToken)
               this.handClose();
             }

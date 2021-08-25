@@ -31,6 +31,11 @@
         </el-table-column>
         <el-table-column prop="username" label="用户名" width="100"/>
         <el-table-column prop="nickname" label="昵称" width="100"/>
+        <el-table-column label="角色" width="150">
+          <template #default="scope">
+            {{ scope.row.role.name }}
+          </template>
+        </el-table-column>
         <el-table-column prop="introduction" label="简介" width="200"/>
         <el-table-column prop="phone" label="电话号码" width="120"/>
         <el-table-column prop="email" label="邮箱" width="200"/>
@@ -51,11 +56,6 @@
         <el-table-column prop="blogNum" label="发布博客数量" width="120"/>
         <el-table-column prop="ideaNum" label="想法数量" width="120"/>
         <el-table-column prop="beFocused" label="被关注数量" width="120"/>
-        <el-table-column label="角色" width="150">
-          <template #default="scope">
-            {{ scope.row.role.name }}
-          </template>
-        </el-table-column>
         <el-table-column label="操作" fixed="right" width="300">
           <template #default="scope">
             <div>
@@ -114,6 +114,7 @@ export default {
   name: "AdminUserList",
   data() {
     return {
+      curType: 'add',
       dialogVisible: false,
       loading: false,
       queryForm: {
@@ -200,6 +201,7 @@ export default {
       })
     },
     toEdit(type, data) {
+      this.curType = type;
       if (type == 'add') {
         this.userForm = {
           username: '',

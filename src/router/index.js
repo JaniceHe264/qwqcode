@@ -1,6 +1,8 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import {checkLogin} from "@/utils/utils";
 import {ElNotification} from "element-plus";
+import Cookie from 'js-cookie'
+import {getUserMenuList} from "@/api/menu";
 
 const routes = [
   {
@@ -72,19 +74,38 @@ const routes = [
         children: [{
           path: '/admin/article',
           name: 'AdminArticle',
-          component: () => import('@/views/admin/article')
+          component: () => import('@/views/admin/article'),
+          meta: {
+            requireAuth: true
+          }
         }, {
           path: '/admin/comment',
           name: 'AdminComment',
-          component: () => import('@/views/admin/comment')
+          component: () => import('@/views/admin/comment'),
+          meta: {
+            requireAuth: true
+          }
         }, {
           path: '/admin/menu',
           name: 'AdminMenuList',
-          component: () => import('@/views/admin/menu/index')
+          component: () => import('@/views/admin/menu'),
+          meta: {
+            requireAuth: true
+          }
         }, {
           path: '/admin/user',
           name: 'AdminUserList',
-          component: () => import('@/views/admin/user/index')
+          component: () => import('@/views/admin/user'),
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: '/admin/role',
+          name: 'AdminRole',
+          component: () => import('@/views/admin/role'),
+          meta: {
+            requireAuth: true
+          }
         }]
       }
     ]
@@ -96,7 +117,36 @@ const router = createRouter({
   routes
 })
 
+// let flag = false;
+
 router.beforeEach((to, from, next) => {
+  // if (to.path.indexOf('admin') != -1 && Cookie.get("auth") && Cookie.get("auth").indexOf('sys:menu') != -1) {
+  //   getUserMenuList().then(res => {
+  //     const menuList = res.data;
+  //     const tempRouter = menuList.filter(temp => temp.type == 1)
+  //     let parentRouter = {
+  //       path: '/admin',
+  //       name: 'AdminIndex',
+  //       component: () => import('@/views/admin'),
+  //       redirect: '/admin/article',
+  //       children: []
+  //     }
+  //     tempRouter.forEach(item => {
+  //       let r = {
+  //         path: item.path,
+  //         component: () => import(item.componentPath),
+  //         meta: {
+  //           requireAuth: true
+  //         }
+  //       };
+  //       parentRouter.children.push(r)
+  //     })
+  //     let newRouter = router.options.routes;
+  //     newRouter[0].children.push(parentRouter)
+  //     router.addRoute(newRouter)
+  //   })
+  // }
+
   if (to.meta.requireAuth) {
     if (!checkLogin()) {
       ElNotification({
