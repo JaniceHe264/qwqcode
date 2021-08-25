@@ -120,6 +120,7 @@ const router = createRouter({
 // let flag = false;
 
 router.beforeEach((to, from, next) => {
+  // TMD 就是不行，等我以后在优化的！！！！！！
   // if (to.path.indexOf('admin') != -1 && Cookie.get("auth") && Cookie.get("auth").indexOf('sys:menu') != -1) {
   //   getUserMenuList().then(res => {
   //     const menuList = res.data;

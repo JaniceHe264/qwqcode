@@ -110,6 +110,7 @@
 import {getAllLabelName} from "@/api/label";
 import {delArticle, getAdminArticleList} from "@/api/article";
 import {getColor} from "@/utils/utils";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "AdminArticle",
@@ -138,6 +139,9 @@ export default {
         pages: 1
       }
     }
+  },
+  computed:{
+    ...mapGetters(['getAuth'])
   },
   created() {
     this.getAllLabel();

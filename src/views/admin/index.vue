@@ -30,6 +30,7 @@
 
 <script>
 import {getUserMenuList} from "@/api/menu";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "AdminIndex",
@@ -40,6 +41,9 @@ export default {
   },
   created() {
     this.getMenuList()
+  },
+  computed:{
+    ...mapGetters(['getAuth'])
   },
   methods: {
     getMenuList() {
