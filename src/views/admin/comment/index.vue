@@ -45,7 +45,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right">
+        <el-table-column label="操作" fixed="right" v-if="getAuth.indexOf('sys:menu:comment:delete') != -1">
           <template #default="scope">
             <div>
               <el-button type="danger" @click="del(scope.row.id)">删除</el-button>
@@ -71,6 +71,7 @@
 
 <script>
 import {getAdminCommentList, delCommentAdmin} from "@/api/comment";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "AdminComment",
@@ -95,6 +96,9 @@ export default {
       ],
       commentList: []
     }
+  },
+  computed: {
+    ...mapGetters(['getAuth'])
   },
   created() {
     this.getCommentList()

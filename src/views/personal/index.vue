@@ -41,7 +41,7 @@
             <el-col :span="18">
               <div class="info-panel">
                 <div class="author-info">
-                  <h2>孙峻</h2>
+                  <h2>{{userInfo.nickname? userInfo.nickname : userInfo.username}}</h2>
                   <span class="info-text" v-if="userInfo.introduction">{{ userInfo.introduction }}</span>
                   <span class="info-text" v-else>这家伙很懒什么都没留下...</span>
                 </div>
