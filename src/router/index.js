@@ -106,6 +106,13 @@ const routes = [
           meta: {
             requireAuth: true
           }
+        }, {
+          path: '/admin/label',
+          name: 'AdminLabel',
+          component: () => import('@/views/admin/label'),
+          meta: {
+            requireAuth: true
+          }
         }]
       }
     ]
