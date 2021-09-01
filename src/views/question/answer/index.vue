@@ -22,7 +22,7 @@
               <span class="info-type" v-if="infoType == 'recommend'">你可能感兴趣 ·</span>
               <span class="info-type" v-if="infoType == 'hot'">热门问题 ·</span>
               <span class="info-type" v-if="infoType == 'new'">最新问题 ·</span>
-              <span class="info-text"> 323回答 · 123关注</span>
+              <span class="info-text"> {{questionInfo.commentNum}}评论 · {{questionInfo.collectNum}}关注</span>
             </div>
           </div>
         </el-col>

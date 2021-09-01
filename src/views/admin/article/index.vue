@@ -82,7 +82,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right">
+        <el-table-column label="操作" fixed="right" v-if="getAuth.indexOf('sys:menu:article:delete') != -1">
           <template #default="scope">
             <div>
               <el-button type="danger" @click="del(scope.row.id)">删除</el-button>
@@ -108,7 +108,7 @@
 
 <script>
 import {getAllLabelName} from "@/api/label";
-import {delArticle, getAdminArticleList} from "@/api/article";
+import {adminDelArticle, getAdminArticleList} from "@/api/article";
 import {getColor} from "@/utils/utils";
 import {mapGetters} from 'vuex'
 
@@ -165,7 +165,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(flag => {
-        delArticle(id).then(res => {
+        adminDelArticle(id).then(res => {
           if (res.code == 200) {
             this.$notify({
               title: '提示',

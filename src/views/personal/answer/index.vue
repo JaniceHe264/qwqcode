@@ -3,7 +3,7 @@
     <div class="panel">
       <div class="question">
         <div class="avatar-info" v-if="answerData">
-          <el-avatar shape="square" :size="35" :src="meUrl">
+          <el-avatar shape="square" :size="35" :src="answerData.user.avatarUrl">
           </el-avatar>
           <span
             class="user-name">{{

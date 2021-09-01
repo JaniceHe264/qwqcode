@@ -4,6 +4,13 @@
  */
 import request from "@/utils/request";
 
+export function adminDelArticle(id){
+  return request({
+    url: `/article/admin/del/${id}`,
+    method: 'DELETE'
+  })
+}
+
 /**
  * 管理端获取文章列表
  * @param params
